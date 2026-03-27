@@ -6,22 +6,22 @@
 <title>蔚来李斌 × 飞机坦克大战 NIO Edition</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:#000;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;touch-action:none;-webkit-user-select:none;user-select:none}
-#app{width:100%;height:100%;position:relative}
-canvas#game{position:fixed;top:0;left:0;width:100%!important;height:100%!important}
-.hud{position:fixed;top:0;left:0;right:0;height:44px;background:linear-gradient(180deg,rgba(0,12,30,0.92),rgba(0,8,20,0.6));display:flex;align-items:center;padding:0 10px;z-index:10;border-bottom:1px solid rgba(0,191,255,0.2);gap:8px;flex-wrap:nowrap}
-.hud-item{color:#fff;font-size:11px;font-weight:bold;text-shadow:0 0 6px rgba(0,191,255,0.4);white-space:nowrap}
+html,body{background:#0a0a1a;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;touch-action:none;-webkit-user-select:none;user-select:none}
+#app{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+canvas{display:block;image-rendering:pixelated}
+.hud{position:fixed;top:0;left:0;right:0;height:50px;background:linear-gradient(180deg,rgba(0,20,40,0.95),rgba(0,10,30,0.7));display:flex;align-items:center;padding:0 16px;z-index:10;border-bottom:2px solid rgba(0,191,255,0.3);gap:16px;flex-wrap:wrap}
+.hud-item{color:#fff;font-size:13px;font-weight:bold;text-shadow:0 0 8px rgba(0,191,255,0.5)}
 .hud-item.score{color:#ffd700}
 .hud-item.lives{color:#ff4444}
-.hud-item.nio{color:#00bfff;margin-left:auto;font-size:12px;letter-spacing:1px}
-.hud-item .label{color:#666;font-size:8px;display:block}
-.star-bar{background:linear-gradient(90deg,#ff0,#f80);height:3px;border-radius:2px;transition:width 0.1s}
-#controls{display:none;position:fixed;bottom:0;left:0;right:0;height:120px;z-index:10;pointer-events:none}
-.cb{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(0,191,255,0.1);border:2px solid rgba(0,191,255,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(0,191,255,0.6);pointer-events:auto;-webkit-tap-highlight-color:transparent;transition:all .1s}
+.hud-item.nio{color:#00bfff;margin-left:auto;font-size:15px;letter-spacing:2px}
+.hud-item .label{color:#888;font-size:10px;display:block}
+.star-bar{background:linear-gradient(90deg,#ff0,#f80);height:4px;border-radius:2px;transition:width 0.1s}
+#controls{display:none;position:fixed;bottom:0;left:0;right:0;height:130px;z-index:10;pointer-events:none}
+.cb{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(0,191,255,0.12);border:2px solid rgba(0,191,255,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;color:rgba(0,191,255,0.7);pointer-events:auto;-webkit-tap-highlight-color:transparent;transition:all .1s}
 .cb:active,.cb.active{background:rgba(0,191,255,0.35);transform:scale(0.92);border-color:rgba(0,191,255,0.8)}
-#bl{bottom:12px;left:10px}#br{bottom:12px;left:80px}
-#bj{bottom:12px;right:74px;width:66px;height:66px;background:rgba(0,255,100,0.1);border-color:rgba(0,255,100,0.25);color:rgba(0,255,100,0.6)}
-#bf{bottom:12px;right:4px;width:66px;height:66px;background:rgba(255,60,60,0.12);border-color:rgba(255,60,60,0.3);color:rgba(255,100,100,0.7);font-size:13px}
+#bl{bottom:16px;left:12px}#br{bottom:16px;left:88px}
+#bj{bottom:16px;right:80px;width:70px;height:70px;background:rgba(0,255,100,0.12);border-color:rgba(0,255,100,0.3);color:rgba(0,255,100,0.7)}
+#bf{bottom:16px;right:4px;width:70px;height:70px;background:rgba(255,60,60,0.15);border-color:rgba(255,60,60,0.4);color:rgba(255,100,100,0.8);font-size:14px}
 @media(pointer:coarse){#controls{display:block}}
 [v-cloak]{display:none!important}
 .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
@@ -112,12 +112,11 @@ const nioModels=[
 ];
 
 // ===================== ENGINE =====================
-let BW=480,BH=800;
-const TL=32,GRAV=0.5,JF=-14,MS=5,BS=9;
+const BW=960,BH=640,TL=40,GRAV=0.5,JF=-16,MS=6,BS=10;
 let ctx,frame=0,camX=0;
 let tiles=[],ents=[],bulls=[],parts=[],ftxts=[],coinI=[],mushI=[];
 let shakeX=0,shakeY=0,shakeDur=0;
-let player={x:80,y:0,w:28,h:36,vx:0,vy:0,og:false,f:1,sc:0,af:0,at:0,inv:0,dead:false,big:0,fast:0,multi:0,shield:0,magnet:0};
+let player={x:80,y:0,w:32,h:40,vx:0,vy:0,og:false,f:1,sc:0,af:0,at:0,inv:0,dead:false,big:0,fast:0,multi:0,shield:0,magnet:0};
 const keys={},ts={l:false,r:false,j:false,s:false};
 
 // ===================== AUDIO =====================
@@ -174,28 +173,26 @@ function sfx(type){
 
 // ===================== LEVEL GEN =====================
 function genLevel(n){
-  const rows=Math.ceil(BH/TL),cols=60+n*10;
-  const gr=rows-2,gr2=rows-1; // ground rows
+  const rows=16,cols=55+n*8;
   const m=Array.from({length:rows},()=>new Array(cols).fill(0));
-  for(let c=0;c<cols;c++){m[gr][c]=1;m[gr2][c]=1}
+  for(let c=0;c<cols;c++){m[14][c]=1;m[15][c]=1}
   // Gaps
-  for(let g=0;g<Math.min(2+Math.floor(n/3),8);g++){const gc=12+Math.floor(Math.random()*(cols-25));const gw=2+Math.floor(Math.random()*2);for(let c=gc;c<gc+gw&&c<cols;c++){m[gr][c]=0;m[gr2][c]=0}}
+  for(let g=0;g<Math.min(2+Math.floor(n/3),8);g++){const gc=12+Math.floor(Math.random()*(cols-25));const gw=2+Math.floor(Math.random()*2);for(let c=gc;c<gc+gw&&c<cols;c++){m[14][c]=0;m[15][c]=0}}
   // Platforms
-  const platMin=Math.floor(rows*0.3),platMax=Math.floor(rows*0.7);
-  for(let p=0;p<5+n*2;p++){const pc=6+Math.floor(Math.random()*(cols-14));const pr=platMin+Math.floor(Math.random()*(platMax-platMin));const pw=2+Math.floor(Math.random()*4);for(let c=pc;c<pc+pw&&c<cols;c++){m[pr][c]=Math.random()<0.35?3:Math.random()<0.4?2:8}}
+  for(let p=0;p<4+n*2;p++){const pc=6+Math.floor(Math.random()*(cols-14));const pr=6+Math.floor(Math.random()*6);const pw=2+Math.floor(Math.random()*4);for(let c=pc;c<pc+pw&&c<cols;c++){m[pr][c]=Math.random()<0.3?3:Math.random()<0.4?2:8}}
   // Pipes
-  for(let p=0;p<1+Math.floor(n/2);p++){const pc=10+Math.floor(Math.random()*(cols-18));const ph=2+Math.floor(Math.random()*2);m[gr-ph][pc]=6;m[gr-ph][pc+1]=7;for(let r=gr-ph+1;r<gr;r++){m[r][pc]=4;m[r][pc+1]=5}}
+  for(let p=0;p<1+Math.floor(n/2);p++){const pc=10+Math.floor(Math.random()*(cols-18));const ph=2+Math.floor(Math.random()*2);m[14-ph][pc]=6;m[14-ph][pc+1]=7;for(let r=14-ph+1;r<14;r++){m[r][pc]=4;m[r][pc+1]=5}}
   // Walls
-  if(n>4){for(let w=0;w<2+Math.floor(n/6);w++){const wx=15+Math.floor(Math.random()*(cols-25));for(let r=gr-1-Math.floor(Math.random()*3);r<gr;r++)m[r][wx]=8}}
+  if(n>4){for(let w=0;w<2+Math.floor(n/6);w++){const wx=15+Math.floor(Math.random()*(cols-25));for(let r=14-1-Math.floor(Math.random()*3);r<14;r++)m[r][wx]=8}}
   // Flags
-  for(let r=3;r<gr;r++)m[r][cols-2]=0;
-  m[Math.floor(rows*0.25)][cols-2]='F';m[Math.floor(rows*0.25)+1][cols-2]='F';m[Math.floor(rows*0.25)+2][cols-2]='F';
-  return{m,rows,cols,gr};
+  for(let r=3;r<14;r++)m[r][cols-2]=0;
+  m[5][cols-2]='F';m[6][cols-2]='F';m[7][cols-2]='F';
+  return{m,rows,cols};
 }
 
 function loadLvl(n){
   tiles=[];ents=[];bulls=[];parts=[];ftxts=[];coinI=[];mushI=[];camX=0;
-  const{m,rows,cols,gr}=genLevel(n);
+  const{m,rows,cols}=genLevel(n);
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const ch=m[r][c],x=c*TL,y=r*TL;
     if(ch===1)tiles.push({x,y,tp:'ground'});
@@ -207,40 +204,38 @@ function loadLvl(n){
     else if(ch==='F')tiles.push({x,y,tp:'flag'});
   }
   const lw=cols*TL;
-  const groundY=gr*TL;
   // NIO cars
   const cc=3+n*2;
   for(let i=0;i<cc;i++){
     const md=nioModels[Math.floor(Math.random()*Math.min(n+2,nioModels.length))];
     const cx=180+Math.floor(Math.random()*(lw-350));
-    let cy=groundY-md.h;
-    if(Math.random()<0.25)cy=Math.floor(rows*0.4+Math.random()*rows*0.25)*TL-md.h;
+    let cy=14*TL-md.h;
+    if(Math.random()<0.25)cy=(7+Math.floor(Math.random()*4))*TL-md.h;
     ents.push({tp:'nio',model:md.name,color:md.color,x:cx,y:cy,w:md.w,h:md.h,vx:(Math.random()>0.5?1:-1)*md.speed*(0.8+Math.random()*0.4),hp:md.hp+Math.floor(n/5),mhp:md.hp+Math.floor(n/5),pts:md.points,canShoot:n>2||md.name==='EP9',isBoss:false,isEP9:md.name==='EP9',st:60+Math.random()*60,alive:true,af:0});
   }
   // Tanks
   for(let i=0;i<Math.max(1,3-Math.floor(n/6));i++){
-    ents.push({tp:'tank',x:250+Math.floor(Math.random()*(lw-400)),y:groundY-40,w:50,h:40,vx:-1-n*0.08,hp:3+Math.floor(n/4),mhp:3+Math.floor(n/4),st:90+Math.random()*50,alive:true,af:0});
+    ents.push({tp:'tank',x:250+Math.floor(Math.random()*(lw-400)),y:14*TL-40,w:50,h:40,vx:-1-n*0.08,hp:3+Math.floor(n/4),mhp:3+Math.floor(n/4),st:90+Math.random()*50,alive:true,af:0});
   }
   // Planes
   for(let i=0;i<2+Math.floor(n/2);i++){
-    ents.push({tp:'plane',x:250+Math.floor(Math.random()*(lw-350)),y:TL*2+(i%3)*TL*2,w:56,h:30,vx:-2-n*0.12-Math.random(),hp:2+Math.floor(n/4),mhp:2+Math.floor(n/4),st:70+Math.random()*50,alive:true,af:0,swt:0,by:TL*2+(i%3)*TL*2});
+    ents.push({tp:'plane',x:250+Math.floor(Math.random()*(lw-350)),y:35+(i%3)*65,w:56,h:30,vx:-2-n*0.12-Math.random(),hp:2+Math.floor(n/4),mhp:2+Math.floor(n/4),st:70+Math.random()*50,alive:true,af:0,swt:0,by:35+(i%3)*65});
   }
-  // ES9 大怪兽
+  // ES9 大怪兽 on levels 3,7,13,17
   if([3,7,13,17].includes(n)){
     const es9hp=8+n*2;
-    ents.push({tp:'nio',model:'ES9',color:'#880088',x:lw*0.6,y:groundY-42,w:68,h:42,vx:2,hp:es9hp,mhp:es9hp,pts:2000+n*200,canShoot:true,isBoss:true,isEP9:false,isES9:true,st:30,alive:true,af:0});
+    ents.push({tp:'nio',model:'ES9',color:'#880088',x:lw*0.6,y:14*TL-42,w:68,h:42,vx:2,hp:es9hp,mhp:es9hp,pts:2000+n*200,canShoot:true,isBoss:true,isEP9:false,isES9:true,st:30,alive:true,af:0});
   }
-  // ET9 Boss
+  // ET9 Boss every 5 levels
   if(n%5===0){
-    ents.push({tp:'nio',model:'ET9',color:'#ffd700',x:lw-450,y:groundY-44,w:72,h:44,vx:2.5,hp:10+n*2,mhp:10+n*2,pts:3000+n*300,canShoot:true,isBoss:true,isEP9:false,st:25,alive:true,af:0});
+    ents.push({tp:'nio',model:'ET9',color:'#ffd700',x:lw-450,y:14*TL-44,w:72,h:44,vx:2.5,hp:10+n*2,mhp:10+n*2,pts:3000+n*300,canShoot:true,isBoss:true,isEP9:false,st:25,alive:true,af:0});
   }
   // Coins
-  const coinMinR=Math.floor(rows*0.2),coinMaxR=Math.floor(rows*0.7);
-  for(let i=0;i<8+n*3;i++){coinI.push({x:80+Math.floor(Math.random()*(lw-160)),y:(coinMinR+Math.floor(Math.random()*(coinMaxR-coinMinR)))*TL,w:24,h:24,col:false,af:0,nio:Math.random()<0.3})}
+  for(let i=0;i<8+n*3;i++){coinI.push({x:80+Math.floor(Math.random()*(lw-160)),y:(5+Math.floor(Math.random()*7))*TL,w:24,h:24,col:false,af:0,nio:Math.random()<0.3})}
   // NIO charging stations
-  for(let i=0;i<1+Math.floor(n/4);i++){const sx=150+Math.floor(Math.random()*(lw-300));for(let j=0;j<5;j++)coinI.push({x:sx+j*28,y:Math.floor(rows*0.5)*TL,w:24,h:24,col:false,af:0,nio:true})}
+  for(let i=0;i<1+Math.floor(n/4);i++){const sx=150+Math.floor(Math.random()*(lw-300));for(let j=0;j<5;j++)coinI.push({x:sx+j*28,y:10*TL,w:24,h:24,col:false,af:0,nio:true})}
 
-  player.x=80;player.y=(gr-3)*TL;player.vx=0;player.vy=0;player.og=false;player.dead=false;player.inv=0;player.w=28;player.h=36;player.big=0;player.fast=0;player.multi=0;player.shield=0;player.magnet=0;starPow.value=0;
+  player.x=80;player.y=11*TL;player.vx=0;player.vy=0;player.og=false;player.dead=false;player.inv=0;player.w=32;player.h=40;player.big=0;player.fast=0;player.multi=0;player.shield=0;player.magnet=0;starPow.value=0;
 }
 
 // ===================== PHYSICS =====================
@@ -345,7 +340,7 @@ function update(){
     if(ro(player,c)&&!player.dead){c.col=true;coins.value++;score.value+=c.nio?200:100;sfx('coin');addFT(c.nio?'+200':'+100',c.x,c.y-10,c.nio?'#00bfff':'#ff0');addP(c.x,c.y,-6,20,'#ff0',8);if(coins.value%20===0){lives.value++;addFT('1UP!',player.x,player.y-30,'#0f0')}}}
 
   // Power-up timers
-  if(player.big>0){player.big--;if(player.big===0){player.w=28;player.h=36}}
+  if(player.big>0){player.big--;if(player.big===0){player.w=32;player.h=40}}
   if(player.fast>0)player.fast--;
   if(player.multi>0)player.multi--;
   if(player.shield>0)player.shield--;
@@ -361,7 +356,7 @@ function update(){
       if(m.tp==='mush'){lives.value++;addFT('\u2764 1UP!',player.x,player.y-30,'#0f0')}
       else if(m.tp==='star'){starPow.value=600;addFT('\u2605 \u65E0\u654C!',player.x,player.y-30,'#ff0')}
       else if(m.tp==='bat'){starPow.value=300;lives.value++;addFT('\u26A1 NIO POWER!',player.x,player.y-30,'#00bfff')}
-      else if(m.tp==='big'){player.big=480;player.w=38;player.h=48;player.y-=12;addFT('\u2B06 \u53D8\u5927!',player.x,player.y-30,'#f80')}
+      else if(m.tp==='big'){player.big=480;player.w=44;player.h=52;player.y-=12;addFT('\u2B06 \u53D8\u5927!',player.x,player.y-30,'#f80')}
       else if(m.tp==='fast'){player.fast=600;addFT('\u26A1 \u52A0\u901F!',player.x,player.y-30,'#0ff')}
       else if(m.tp==='multi'){player.multi=480;addFT('\u2734 \u4E09\u8FDE\u53D1!',player.x,player.y-30,'#f0f')}
       else if(m.tp==='shield'){player.shield=480;player.inv=480;addFT('\u26E8 \u62A4\u76FE!',player.x,player.y-30,'#4af')}
@@ -1019,15 +1014,8 @@ onMounted(()=>{
   const c=document.getElementById('game');
   ctx=c.getContext('2d');
   function resize2(){
-    const w=window.innerWidth,h=window.innerHeight;
-    // Canvas fills entire screen at native resolution for sharpness
-    const dpr=Math.min(window.devicePixelRatio||1,2);
-    BW=Math.round(w*dpr);BH=Math.round(h*dpr);
-    // Cap to reasonable game resolution
-    if(BW>960){const s=960/BW;BW=960;BH=Math.round(BH*s)}
-    if(BH>1600){const s=1600/BH;BH=1600;BW=Math.round(BW*s)}
-    c.width=BW;c.height=BH;
-    c.style.width=w+'px';c.style.height=h+'px';
+    const w=window.innerWidth,h=window.innerHeight,ch=('ontouchstart'in window)?130:0,s=Math.min(w/BW,(h-ch-50)/BH);
+    c.style.width=(BW*s)+'px';c.style.height=(BH*s)+'px';c.width=BW;c.height=BH;
     const ec=document.getElementById('epicCanvas');if(ec){ec.width=w;ec.height=h}
   }
   window.addEventListener('resize',resize2);resize2();
