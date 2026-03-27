@@ -586,13 +586,13 @@ function startEpicIntro(){
     }
     if(!epicAnim)epicAnimLoop();
   });
-  // Fast cinematic timing
-  setTimeout(()=>{introStep.value=1},300);
-  setTimeout(()=>{introStep.value=2},800);
-  setTimeout(()=>{introStep.value=3},1600);
-  setTimeout(()=>{introStep.value=4},2600);
-  setTimeout(()=>{introStep.value=5},3400);
-  setTimeout(()=>{introStep.value=6},4200);
+  // Instant cinematic - all text within 1 second
+  setTimeout(()=>{introStep.value=1},100);
+  setTimeout(()=>{introStep.value=2},250);
+  setTimeout(()=>{introStep.value=3},500);
+  setTimeout(()=>{introStep.value=4},700);
+  setTimeout(()=>{introStep.value=5},900);
+  setTimeout(()=>{introStep.value=6},1100);
 }
 
 function epicAnimLoop(){
@@ -663,7 +663,7 @@ function epicAnimLoop(){
   // === GOLDEN RING OF POWER (central) ===
   const cx=w/2,cy=h*0.42;
   epicRing+=step>=5?0.006:0.002;
-  const ringGrow=step>=5?Math.min(1,(t-introStepTime(5))/120):0;
+  const ringGrow=step>=5?Math.min(1,(t-introStepTime(5))/20):0;
   const ringBase=Math.min(w,h)*0.18;
   const ringR=ringBase+ringGrow*ringBase*0.3+Math.sin(t*0.012)*5;
 
@@ -750,54 +750,58 @@ function epicAnimLoop(){
   // ============ TEXT RENDERING ============
   c.textAlign='center';c.textBaseline='middle';
 
-  // Step 2: "蔚来李斌" - appears like ancient scripture
+  // Step 2: "NIO\u674E\u658C" top line
   if(step>=2){
-    const ta=Math.min(1,(t-introStepTime(2))/90);
-    const fs1=Math.min(w*0.045,22);
+    const ta=Math.min(1,(t-introStepTime(2))/20);
+    const fs1=Math.min(w*0.05,28);
     c.save();
-    c.shadowColor='rgba(200,160,80,0.6)';c.shadowBlur=30;
-    c.fillStyle=`rgba(200,180,130,${ta*0.7})`;
-    c.font=`300 ${fs1}px "Georgia","Times New Roman",serif`;
-    c.fillText('\u84DA\u6765\u674E\u658C',cx,cy-ringR*1.2-30);
+    c.shadowColor='rgba(200,160,80,0.8)';c.shadowBlur=40;
+    c.fillStyle=`rgba(220,200,150,${ta*0.85})`;
+    c.font=`700 ${fs1}px "Georgia","Times New Roman",serif`;
+    c.fillText('NIO\u674E\u658C',cx,cy-ringR*1.15-50);
     c.shadowBlur=0;
-    // Decorative lines
-    const lineW=Math.min(200,w*0.25)*ta;
-    c.strokeStyle=`rgba(200,170,100,${ta*0.25})`;c.lineWidth=0.5;
-    c.beginPath();c.moveTo(cx-lineW,cy-ringR*1.2-12);c.lineTo(cx+lineW,cy-ringR*1.2-12);c.stroke();
+    const lineW=Math.min(220,w*0.28)*ta;
+    c.strokeStyle=`rgba(200,170,100,${ta*0.3})`;c.lineWidth=0.5;
+    c.beginPath();c.moveTo(cx-lineW,cy-ringR*1.15-32);c.lineTo(cx+lineW,cy-ringR*1.15-32);c.stroke();
     c.restore();
   }
 
-  // Step 3: Main title "勇闯纳斯达克"
+  // Step 3: Main title "\u52C7\u95EF\u7EB3\u65AF\u8FBE\u514B"
   if(step>=3){
-    const ta=Math.min(1,(t-introStepTime(3))/100);
-    const fs2=Math.min(w*0.09,68);
+    const ta=Math.min(1,(t-introStepTime(3))/18);
+    const fs2=Math.min(w*0.1,74);
     c.save();
-    c.shadowColor='rgba(255,200,80,0.8)';c.shadowBlur=50*ta;
-    // Gold metallic gradient text
-    const tg=c.createLinearGradient(cx-200,cy-20,cx+200,cy+20);
-    tg.addColorStop(0,'#ffeebb');tg.addColorStop(0.25,'#d4a340');tg.addColorStop(0.5,'#ffd780');tg.addColorStop(0.75,'#b8860b');tg.addColorStop(1,'#ffeebb');
+    c.shadowColor='rgba(255,200,80,0.9)';c.shadowBlur=60*ta;
+    const tg=c.createLinearGradient(cx-250,cy-20,cx+250,cy+20);
+    tg.addColorStop(0,'#ffeebb');tg.addColorStop(0.2,'#d4a340');tg.addColorStop(0.5,'#ffd780');tg.addColorStop(0.8,'#b8860b');tg.addColorStop(1,'#ffeebb');
     c.fillStyle=tg;c.globalAlpha=ta;
     c.font=`900 ${fs2}px "Georgia","STSong","SimSun",serif`;
-    c.fillText('\u52C7\u95EF\u7EB3\u65AF\u8FBE\u514B',cx,cy);
+    c.fillText('\u52C7\u95EF\u7EB3\u65AF\u8FBE\u514B',cx,cy-10);
     c.globalAlpha=1;c.shadowBlur=0;
     c.restore();
   }
 
-  // Step 4: Subtitle "宇宙第一车企 · 王者归来"
+  // Step 4: "\u5B87\u5B99\u7B2C\u4E00\u4E07\u4EBF\u8F66\u4F01\uFF01" + "\u738B\u8005\u5F52\u6765"
   if(step>=4){
-    const ta=Math.min(1,(t-introStepTime(4))/100);
-    const fs3=Math.min(w*0.04,26);
+    const ta=Math.min(1,(t-introStepTime(4))/20);
+    const fs3=Math.min(w*0.042,28);
+    const fs4=Math.min(w*0.065,48);
     c.save();
-    c.shadowColor='rgba(180,140,60,0.5)';c.shadowBlur=20*ta;
-    c.fillStyle=`rgba(210,190,150,${ta*0.75})`;
-    c.font=`300 ${fs3}px "Georgia","Times New Roman",serif`;
-    c.letterSpacing='4px';
-    c.fillText('\u5B87\u5B99\u7B2C\u4E00\u8F66\u4F01 \u00B7 \u738B\u8005\u5F52\u6765',cx,cy+ringR*1.1+20);
-    c.shadowBlur=0;
-    // Bottom decorative line
-    const lineW2=Math.min(280,w*0.35)*ta;
+    c.shadowColor='rgba(180,140,60,0.6)';c.shadowBlur=25*ta;
+    c.fillStyle=`rgba(220,200,160,${ta*0.8})`;
+    c.font=`400 ${fs3}px "Georgia","Times New Roman",serif`;
+    c.fillText('\u5B87\u5B99\u7B2C\u4E00\u4E07\u4EBF\u8F66\u4F01\uFF01',cx,cy+ringR*0.9+15);
+    // "王者归来" - bigger, bolder
+    c.shadowColor='rgba(255,180,60,0.8)';c.shadowBlur=40*ta;
+    const tg2=c.createLinearGradient(cx-120,0,cx+120,0);
+    tg2.addColorStop(0,'#ffeebb');tg2.addColorStop(0.5,'#d4a340');tg2.addColorStop(1,'#ffeebb');
+    c.fillStyle=tg2;c.globalAlpha=ta;
+    c.font=`900 ${fs4}px "Georgia","STSong","SimSun",serif`;
+    c.fillText('\u738B\u8005\u5F52\u6765',cx,cy+ringR*0.9+15+fs4*1.1);
+    c.globalAlpha=1;c.shadowBlur=0;
+    const lineW2=Math.min(300,w*0.38)*ta;
     c.strokeStyle=`rgba(200,170,100,${ta*0.2})`;c.lineWidth=0.5;
-    c.beginPath();c.moveTo(cx-lineW2,cy+ringR*1.1+40);c.lineTo(cx+lineW2,cy+ringR*1.1+40);c.stroke();
+    c.beginPath();c.moveTo(cx-lineW2,cy+ringR*0.9+20+fs4*1.3);c.lineTo(cx+lineW2,cy+ringR*0.9+20+fs4*1.3);c.stroke();
     c.restore();
   }
 
@@ -848,7 +852,7 @@ function epicAnimLoop(){
 }
 
 function introStepTime(s){
-  const times=[0,18,48,96,156,204,252];
+  const times=[0,6,15,30,42,54,66];
   return (times[s]||0);
 }
 
@@ -970,6 +974,11 @@ onMounted(()=>{
   sT('bl','l');sT('br','r');sT('bj','j');sT('bf','s');
   startEpicIntro();
   gameLoop();
+  // Auto-trigger music on first interaction
+  function autoMusic(){ensureAudio();document.removeEventListener('click',autoMusic);document.removeEventListener('touchstart',autoMusic);document.removeEventListener('keydown',autoMusic)}
+  document.addEventListener('click',autoMusic);
+  document.addEventListener('touchstart',autoMusic);
+  document.addEventListener('keydown',autoMusic);
 });
 
 return{state,introStep,score,coins,lives,level,starPow,nioModels,startGame,resetGame,nextAction,canvas:canvasRef};
