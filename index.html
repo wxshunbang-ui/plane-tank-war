@@ -16,12 +16,13 @@ canvas{display:block;image-rendering:pixelated}
 .hud-item.nio{color:#00bfff;margin-left:auto;font-size:15px;letter-spacing:2px}
 .hud-item .label{color:#888;font-size:10px;display:block}
 .star-bar{background:linear-gradient(90deg,#ff0,#f80);height:4px;border-radius:2px;transition:width 0.1s}
-#controls{display:none;position:fixed;bottom:0;left:0;right:0;height:90px;z-index:10;pointer-events:none;background:linear-gradient(0deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0) 100%)}
-.cb{position:absolute;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,0.5);pointer-events:auto;-webkit-tap-highlight-color:transparent;transition:all .1s}
-.cb:active,.cb.active{background:rgba(255,255,255,0.3);transform:scale(0.92);color:#fff}
-#bl{bottom:20px;left:10px}#br{bottom:20px;left:72px}
-#bj{bottom:20px;right:62px;width:56px;height:56px;background:rgba(0,255,100,0.08);border-color:rgba(0,255,100,0.2);color:rgba(0,255,100,0.5);font-size:13px}
-#bf{bottom:20px;right:2px;width:56px;height:56px;background:rgba(255,60,60,0.1);border-color:rgba(255,60,60,0.25);color:rgba(255,100,100,0.5);font-size:12px}
+#controls{display:none;position:fixed;bottom:0;left:0;right:0;height:70px;z-index:10;pointer-events:none}
+.cb{position:absolute;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,0.35);pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.cb:active,.cb.active{background:rgba(255,255,255,0.25);color:#fff}
+#bl{bottom:14px;left:6px}
+#br{bottom:14px;left:56px}
+#bj{bottom:14px;right:52px;width:48px;height:48px;color:rgba(0,255,100,0.35);border-color:rgba(0,255,100,0.15);font-size:11px}
+#bf{bottom:14px;right:2px;width:48px;height:48px;color:rgba(255,100,100,0.4);border-color:rgba(255,60,60,0.15);font-size:10px}
 @media(pointer:coarse){#controls{display:block}}
 [v-cloak]{display:none!important}
 .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
@@ -112,7 +113,7 @@ const nioModels=[
 ];
 
 // ===================== ENGINE =====================
-const BW=960,BH=640,TL=40,GRAV=0.45,JF=-18,MS=6,BS=10;
+const BW=960,BH=640,TL=40,GRAV=0.42,JF=-19,MS=6,BS=10;
 let ctx,frame=0,camX=0;
 let tiles=[],ents=[],bulls=[],parts=[],ftxts=[],coinI=[],mushI=[];
 let shakeX=0,shakeY=0,shakeDur=0;
@@ -178,15 +179,15 @@ function genLevel(n){
   for(let c=0;c<cols;c++){m[14][c]=1;m[15][c]=1}
   // Gaps
   for(let g=0;g<Math.min(2+Math.floor(n/3),8);g++){const gc=12+Math.floor(Math.random()*(cols-25));const gw=2+Math.floor(Math.random()*2);for(let c=gc;c<gc+gw&&c<cols;c++){m[14][c]=0;m[15][c]=0}}
-  // Platforms
-  for(let p=0;p<4+n*2;p++){const pc=6+Math.floor(Math.random()*(cols-14));const pr=6+Math.floor(Math.random()*6);const pw=2+Math.floor(Math.random()*4);for(let c=pc;c<pc+pw&&c<cols;c++){m[pr][c]=Math.random()<0.3?3:Math.random()<0.4?2:8}}
+  // Platforms (row 8-12 = reachable from ground at row 14)
+  for(let p=0;p<4+n*2;p++){const pc=6+Math.floor(Math.random()*(cols-14));const pr=8+Math.floor(Math.random()*5);const pw=2+Math.floor(Math.random()*4);for(let c=pc;c<pc+pw&&c<cols;c++){m[pr][c]=Math.random()<0.3?3:Math.random()<0.4?2:8}}
   // Pipes
   for(let p=0;p<1+Math.floor(n/2);p++){const pc=10+Math.floor(Math.random()*(cols-18));const ph=2+Math.floor(Math.random()*2);m[14-ph][pc]=6;m[14-ph][pc+1]=7;for(let r=14-ph+1;r<14;r++){m[r][pc]=4;m[r][pc+1]=5}}
   // Walls
   if(n>4){for(let w=0;w<2+Math.floor(n/6);w++){const wx=15+Math.floor(Math.random()*(cols-25));for(let r=14-1-Math.floor(Math.random()*3);r<14;r++)m[r][wx]=8}}
   // Flags
   for(let r=3;r<14;r++)m[r][cols-2]=0;
-  m[5][cols-2]='F';m[6][cols-2]='F';m[7][cols-2]='F';
+  m[8][cols-2]='F';m[9][cols-2]='F';m[10][cols-2]='F';
   return{m,rows,cols};
 }
 
@@ -1016,7 +1017,7 @@ onMounted(()=>{
   function resize2(){
     const w=window.innerWidth,h=window.innerHeight;
     const isTouch='ontouchstart'in window;
-    const ctrlH=isTouch?90:0;
+    const ctrlH=isTouch?70:0;
     const hudH=isTouch?44:50;
     const availH=h-ctrlH-hudH;
     const s=Math.min(w/BW,availH/BH);
