@@ -123,6 +123,7 @@ const nioModels=[
   {name:'EL7',color:'#009933',w:54,h:30,hp:3,speed:1.5,points:350,desc:'智能SUV'},
   {name:'EL8',color:'#336633',w:58,h:34,hp:5,speed:1.2,points:500,desc:'大型SUV'},
   {name:'ES7',color:'#4488aa',w:52,h:30,hp:3,speed:1.8,points:320,desc:'中型SUV'},
+  {name:'ES9',color:'#880088',w:64,h:38,hp:8,speed:1.8,points:1200,desc:'旗舰大怪兽'},
   {name:'ET9',color:'#bb8800',w:56,h:28,hp:6,speed:2.5,points:1000,desc:'行政旗舰'},
 ];
 
@@ -234,7 +235,12 @@ function loadLvl(n){
   for(let i=0;i<2+Math.floor(n/2);i++){
     ents.push({tp:'plane',x:250+Math.floor(Math.random()*(lw-350)),y:35+(i%3)*65,w:56,h:30,vx:-2-n*0.12-Math.random(),hp:2+Math.floor(n/4),mhp:2+Math.floor(n/4),st:70+Math.random()*50,alive:true,af:0,swt:0,by:35+(i%3)*65});
   }
-  // Boss every 5 levels
+  // ES9 大怪兽 on levels 3,7,13,17
+  if([3,7,13,17].includes(n)){
+    const es9hp=8+n*2;
+    ents.push({tp:'nio',model:'ES9',color:'#880088',x:lw*0.6,y:14*TL-42,w:68,h:42,vx:2,hp:es9hp,mhp:es9hp,pts:2000+n*200,canShoot:true,isBoss:true,isEP9:false,isES9:true,st:30,alive:true,af:0});
+  }
+  // ET9 Boss every 5 levels
   if(n%5===0){
     ents.push({tp:'nio',model:'ET9',color:'#ffd700',x:lw-450,y:14*TL-44,w:72,h:44,vx:2.5,hp:10+n*2,mhp:10+n*2,pts:3000+n*300,canShoot:true,isBoss:true,isEP9:false,st:25,alive:true,af:0});
   }
@@ -511,7 +517,9 @@ function drawPlayer(){
 function drawNIO(e){
   const x=e.x,y=e.y,w=e.w,h=e.h;
   // Neon glow for boss
-  if(e.isBoss){ctx.shadowColor='#ffd700';ctx.shadowBlur=20}
+  if(e.isBoss){ctx.shadowColor=e.isES9?'#cc00ff':'#ffd700';ctx.shadowBlur=e.isES9?30:20}
+  // ES9 大怪兽 purple energy field
+  if(e.isES9){const pulse=Math.sin(frame*0.08)*8;ctx.fillStyle=`rgba(160,0,255,${0.12+Math.sin(frame*0.06)*0.06})`;ctx.beginPath();ctx.arc(x+w/2,y+h/2,w*0.7+pulse,0,Math.PI*2);ctx.fill();for(let i=0;i<4;i++){const a=frame*0.03+i*Math.PI/2,r=w*0.6+pulse;ctx.fillStyle=`rgba(200,0,255,${0.5+Math.sin(frame*0.1+i)*0.3})`;ctx.beginPath();ctx.arc(x+w/2+Math.cos(a)*r,y+h/2+Math.sin(a)*r*0.5,4,0,Math.PI*2);ctx.fill()}}
   // Car body
   ctx.fillStyle=e.color;ctx.beginPath();
   ctx.moveTo(x+6,y+h);ctx.lineTo(x+2,y+h*0.5);ctx.lineTo(x+w*0.15,y+h*0.2);ctx.lineTo(x+w*0.3,y);ctx.lineTo(x+w*0.7,y);ctx.lineTo(x+w*0.85,y+h*0.2);ctx.lineTo(x+w-2,y+h*0.5);ctx.lineTo(x+w-6,y+h);ctx.closePath();ctx.fill();
@@ -534,6 +542,8 @@ function drawNIO(e){
   const pct=e.hp/e.mhp;ctx.fillStyle='#300';ctx.fillRect(x,y-8,w,5);ctx.fillStyle=pct>0.5?'#0f0':pct>0.25?'#ff0':'#f00';ctx.fillRect(x,y-8,w*pct,5);
   // EP9 speed lines
   if(e.isEP9){ctx.strokeStyle='rgba(255,80,0,0.4)';ctx.lineWidth=2;for(let i=0;i<3;i++){const ly=y+h*0.3+i*h*0.2;ctx.beginPath();ctx.moveTo(e.vx>0?x-18-i*8:x+w+18+i*8,ly);ctx.lineTo(e.vx>0?x:x+w,ly);ctx.stroke()}}
+  // ES9 大怪兽 label
+  if(e.isES9){ctx.shadowColor='#cc00ff';ctx.shadowBlur=15;ctx.fillStyle='#ff00ff';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.fillText('大怪兽',x+w/2,y-14);ctx.shadowBlur=0}
 }
 
 function drawTank(e){
