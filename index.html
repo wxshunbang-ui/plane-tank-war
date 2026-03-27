@@ -112,7 +112,7 @@ const nioModels=[
 ];
 
 // ===================== ENGINE =====================
-const BW=960,BH=640,TL=40,GRAV=0.55,JF=-16,MS=5,BS=10;
+const BW=960,BH=640,TL=40,GRAV=0.5,JF=-16,MS=6,BS=10;
 let ctx,frame=0,camX=0;
 let tiles=[],ents=[],bulls=[],parts=[],ftxts=[],coinI=[],mushI=[];
 let shakeX=0,shakeY=0,shakeDur=0;
@@ -277,11 +277,12 @@ function update(){
   if(Math.abs(player.vx)>1){player.at++;if(player.at>5){player.at=0;player.af=(player.af+1)%3}}else player.af=0;
 
   player.vy+=GRAV;if(player.vy>15)player.vy=15;
-  player.x+=player.vx;if(player.x<camX)player.x=camX;rtx(player);
+  player.x+=player.vx;if(player.x<camX-200)player.x=camX-200;rtx(player);
+  const wasGoingUp=player.vy<0;
   player.y+=player.vy;player.og=false;rty(player);
 
-  // Head bump - check 3 points across player head
-  if(player.vy<0){
+  // Head bump - check 3 points across player head (use saved velocity)
+  if(wasGoingUp){
     const headY=player.y-2;
     const checks=[player.x+4,player.x+player.w/2,player.x+player.w-4];
     for(const hx of checks){
