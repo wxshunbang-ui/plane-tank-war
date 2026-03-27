@@ -25,58 +25,72 @@ canvas{display:block;image-rendering:pixelated}
 @media(pointer:coarse){#controls{display:block}}
 [v-cloak]{display:none!important}
 .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
-.overlay.start-bg{background:radial-gradient(ellipse at 50% 40%,rgba(0,30,80,0.98),rgba(0,0,10,1))}
-.overlay.start-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(0,100,255,0.08) 0%,transparent 60%);animation:bgPulse 4s ease-in-out infinite}
-.overlay.start-bg::after{content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(from 0deg,transparent,rgba(0,100,255,0.03),transparent,rgba(0,191,255,0.04),transparent);animation:bgSpin 20s linear infinite}
-@keyframes bgPulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-@keyframes bgSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .overlay.go-bg{background:radial-gradient(ellipse at center,rgba(40,0,0,0.95),rgba(0,0,0,0.98))}
 .overlay.win-bg{background:radial-gradient(ellipse at center,rgba(0,20,50,0.92),rgba(0,0,0,0.97))}
-.start-top{font-size:clamp(11px,2.5vw,14px);color:rgba(0,191,255,0.6);letter-spacing:clamp(6px,2vw,16px);text-transform:uppercase;margin-bottom:12px;animation:fadeSlideDown 1s ease-out both;font-weight:300}
-.start-trillion{font-size:clamp(14px,3vw,18px);color:#ffd700;letter-spacing:clamp(3px,1vw,8px);margin-bottom:8px;animation:fadeSlideDown 1.2s ease-out both;font-weight:bold;text-shadow:0 0 20px rgba(255,200,0,0.3)}
-.start-title{font-size:clamp(36px,8vw,64px);font-weight:900;letter-spacing:clamp(2px,1vw,6px);background:linear-gradient(135deg,#fff 0%,#00bfff 40%,#0066ff 60%,#00bfff 80%,#fff 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeSlideUp 1s ease-out both,gradientShift 4s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(0,100,255,0.5));line-height:1.2;text-align:center}
-.start-subtitle{font-size:clamp(18px,4vw,28px);color:#fff;font-weight:300;letter-spacing:clamp(4px,1.5vw,12px);margin-top:4px;animation:fadeSlideUp 1.3s ease-out both;text-shadow:0 0 15px rgba(0,191,255,0.4)}
-.start-nio{font-size:clamp(40px,9vw,72px);font-weight:900;color:transparent;-webkit-text-stroke:2px rgba(0,191,255,0.25);letter-spacing:clamp(8px,3vw,20px);margin:16px 0;animation:fadeIn 2s ease-out both;position:relative}
-.start-nio::after{content:'NIO';position:absolute;left:0;right:0;top:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;background:linear-gradient(180deg,rgba(0,191,255,0.15),transparent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0}
-.start-line{width:clamp(120px,40vw,320px);height:1px;background:linear-gradient(90deg,transparent,rgba(0,191,255,0.5),transparent);margin:12px 0;animation:fadeIn 1.5s ease-out both}
-.car-parade{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap;justify-content:center;max-width:520px;animation:fadeIn 2s ease-out both}
-.car-card{padding:5px 10px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;border:1px solid rgba(255,255,255,0.1);text-align:center;backdrop-filter:blur(4px);transition:transform 0.2s,box-shadow 0.2s}
-.car-card:hover{transform:scale(1.1);box-shadow:0 0 12px rgba(0,191,255,0.3)}
-.info{color:rgba(255,255,255,0.5);font-size:clamp(11px,2.2vw,13px);margin:8px 0;text-align:center;max-width:400px;line-height:1.7;animation:fadeIn 2.2s ease-out both}
-.start-btn{margin-top:16px;padding:clamp(10px,2vw,16px) clamp(32px,8vw,56px);font-size:clamp(16px,3.5vw,22px);font-weight:bold;color:#fff;background:linear-gradient(135deg,#0044cc,#00aaff);border:none;border-radius:40px;cursor:pointer;letter-spacing:3px;animation:fadeSlideUp 2.5s ease-out both,btnGlow 2s ease-in-out infinite;box-shadow:0 0 30px rgba(0,100,255,0.3);position:relative;overflow:hidden;z-index:1}
-.start-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,0.1),transparent);animation:btnSpin 3s linear infinite;z-index:-1}
-@keyframes btnGlow{0%,100%{box-shadow:0 0 30px rgba(0,100,255,0.3)}50%{box-shadow:0 0 50px rgba(0,150,255,0.6)}}
-@keyframes btnSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.brand{color:rgba(0,191,255,0.3);font-size:clamp(10px,1.8vw,12px);margin-top:16px;letter-spacing:clamp(4px,1.5vw,8px);animation:fadeIn 3s ease-out both}
-@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.level-clear{animation:slideIn .5s ease-out}
-@keyframes slideIn{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.go-title{font-size:clamp(36px,8vw,60px);font-weight:900;color:#ff2222;text-shadow:0 0 40px rgba(255,0,0,0.5);animation:fadeSlideUp 0.5s ease-out}
-.win-title{font-size:clamp(32px,7vw,52px);font-weight:900;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,200,0,0.5));animation:slideIn 0.5s ease-out}
+#epicCanvas{position:fixed;inset:0;z-index:19;display:block}
+.epic-ui{position:fixed;inset:0;z-index:21;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.epic-ui>*{pointer-events:auto}
+.e-fade{opacity:0;transition:opacity 1.5s ease}
+.e-fade.vis{opacity:1}
+.e-slow{transition:opacity 2.5s ease}
+.e-top{font-size:clamp(10px,2vw,13px);color:rgba(180,160,120,0.5);letter-spacing:clamp(8px,3vw,22px);text-transform:uppercase;font-weight:300;margin-bottom:6px}
+.e-pre{font-size:clamp(13px,2.8vw,17px);color:rgba(220,190,120,0.8);letter-spacing:clamp(4px,1.5vw,10px);font-weight:400;margin-bottom:10px;text-shadow:0 0 30px rgba(200,160,50,0.3)}
+.e-main{font-size:clamp(38px,9vw,72px);font-weight:900;letter-spacing:clamp(4px,1.5vw,10px);color:transparent;background:linear-gradient(180deg,#ffeaaa 0%,#d4a340 30%,#b8860b 50%,#d4a340 70%,#ffeaaa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(200,150,50,0.6)) drop-shadow(0 4px 8px rgba(0,0,0,0.8));line-height:1.15;text-align:center}
+.e-sub{font-size:clamp(15px,3.5vw,24px);color:rgba(200,180,140,0.7);font-weight:300;letter-spacing:clamp(3px,1.2vw,8px);margin-top:8px;text-shadow:0 0 20px rgba(180,140,60,0.3)}
+.e-nio{font-size:clamp(50px,12vw,100px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(200,170,100,0.12);letter-spacing:clamp(10px,4vw,30px);margin:20px 0 10px;position:relative}
+.e-line{width:clamp(80px,30vw,280px);height:1px;background:linear-gradient(90deg,transparent,rgba(200,170,100,0.35),rgba(255,220,140,0.6),rgba(200,170,100,0.35),transparent);margin:10px 0}
+.e-cars{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:480px;margin:10px 0}
+.e-car{padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);border:1px solid rgba(200,170,100,0.15);letter-spacing:1px}
+.e-info{color:rgba(180,160,130,0.45);font-size:clamp(10px,2vw,12px);text-align:center;line-height:1.8;margin:8px 0}
+.e-btn{margin-top:14px;padding:clamp(12px,2.5vw,18px) clamp(36px,9vw,64px);font-size:clamp(15px,3.2vw,20px);font-weight:700;color:#ffeaaa;background:transparent;border:1px solid rgba(200,170,100,0.35);border-radius:2px;cursor:pointer;letter-spacing:clamp(4px,1.5vw,8px);text-transform:uppercase;transition:all 0.4s;text-shadow:0 0 15px rgba(200,160,80,0.4);position:relative;overflow:hidden}
+.e-btn:hover,.e-btn:active{background:rgba(200,170,100,0.08);border-color:rgba(255,220,140,0.6);box-shadow:0 0 40px rgba(200,160,80,0.2);color:#fff}
+.e-btn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,220,140,0.08),transparent);animation:btnShine 3s ease-in-out infinite}
+@keyframes btnShine{0%{left:-100%}50%{left:100%}100%{left:100%}}
+.e-brand{color:rgba(200,170,100,0.2);font-size:clamp(9px,1.6vw,11px);letter-spacing:clamp(5px,2vw,10px);margin-top:18px;text-transform:uppercase}
+.go-title{font-size:clamp(36px,8vw,60px);font-weight:900;color:#ff2222;text-shadow:0 0 40px rgba(255,0,0,0.5)}
+.win-title{font-size:clamp(32px,7vw,52px);font-weight:900;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,200,0,0.5))}
+.start-btn{margin-top:16px;padding:clamp(10px,2vw,16px) clamp(32px,8vw,56px);font-size:clamp(16px,3.5vw,22px);font-weight:bold;color:#fff;background:linear-gradient(135deg,#0044cc,#00aaff);border:none;border-radius:40px;cursor:pointer;letter-spacing:3px;box-shadow:0 0 30px rgba(0,100,255,0.3)}
 </style>
 </head>
 <body>
 <div id="app" v-cloak>
-  <!-- START SCREEN -->
-  <div class="overlay start-bg" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame">
-    <div class="start-top">NIO &times; MARIO EDITION</div>
-    <div class="start-trillion">&#x4E07;&#x4EBF;&#x84DA;&#x6765; CEO</div>
-    <div class="start-title">&#x52C7;&#x95EF;&#x7EB3;&#x65AF;&#x8FBE;&#x514B;</div>
-    <div class="start-subtitle">&#x91CD;&#x8FD4;&#x5B87;&#x5B99;&#x7B2C;&#x4E00;&#x8F66;&#x4F01;&#xFF01;</div>
-    <div class="start-nio">NIO</div>
-    <div class="start-line"></div>
-    <div class="car-parade">
-      <div class="car-card" v-for="c in nioModels" :key="c.name" :style="{background:c.color}">{{c.name}}</div>
+  <!-- EPIC CINEMATIC START -->
+  <canvas id="epicCanvas" v-if="state==='start'"></canvas>
+  <div class="epic-ui" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame">
+    <div class="e-fade e-slow" :class="{vis:introStep>=1}">
+      <div class="e-top">NIO &times; MARIO EDITION</div>
     </div>
-    <div class="info">
-      20&#x5173;&#x5361;&#x6311;&#x6218; &middot; &#x84DA;&#x6765;&#x5168;&#x7CFB;&#x8F66;&#x578B;&#x602A;&#x517D; &middot; &#x6BCF;5&#x5173;BOSS&#x6218;<br>
-      &#x2190; &#x2192; &#x79FB;&#x52A8; &#xFF5C; &#x2191;/&#x7A7A;&#x683C; &#x8DF3;&#x8DC3; &#xFF5C; X/J &#x5C04;&#x51FB; &#xFF5C; &#x8E29;&#x5934;&#x6D88;&#x706D;
+    <div class="e-fade" :class="{vis:introStep>=2}">
+      <div class="e-pre">&#x4E07;&#x4EBF;&#x84DA;&#x6765; CEO</div>
     </div>
-    <button class="start-btn" @click.stop="startGame" @touchstart.prevent.stop="startGame">&#x5F00;&#x59CB;&#x5F81;&#x670D;</button>
-    <div class="brand">BLUE SKY COMING</div>
+    <div class="e-fade" :class="{vis:introStep>=3}">
+      <div class="e-main">&#x52C7;&#x95EF;&#x7EB3;&#x65AF;&#x8FBE;&#x514B;</div>
+    </div>
+    <div class="e-fade e-slow" :class="{vis:introStep>=4}">
+      <div class="e-sub">&#x91CD;&#x8FD4;&#x5B87;&#x5B99;&#x7B2C;&#x4E00;&#x8F66;&#x4F01;</div>
+    </div>
+    <div class="e-fade e-slow" :class="{vis:introStep>=5}">
+      <div class="e-line"></div>
+      <div class="e-nio">NIO</div>
+      <div class="e-line"></div>
+    </div>
+    <div class="e-fade e-slow" :class="{vis:introStep>=6}">
+      <div class="e-cars">
+        <div class="e-car" v-for="c in nioModels" :key="c.name" :style="{borderColor:c.color+'66'}">{{c.name}}</div>
+      </div>
+    </div>
+    <div class="e-fade e-slow" :class="{vis:introStep>=7}">
+      <div class="e-info">
+        20&#x5173;&#x53F2;&#x8BD7;&#x5F81;&#x7A0B; &middot; &#x84DA;&#x6765;&#x5168;&#x7CFB;&#x8F66;&#x578B;&#x602A;&#x517D; &middot; &#x6BCF;5&#x5173;BOSS&#x6218;<br>
+        &#x2190; &#x2192; &#x79FB;&#x52A8; &ensp; &#x2191;/&#x7A7A;&#x683C; &#x8DF3;&#x8DC3; &ensp; X/J &#x5C04;&#x51FB; &ensp; &#x8E29;&#x5934;&#x6D88;&#x706D;
+      </div>
+    </div>
+    <div class="e-fade" :class="{vis:introStep>=8}">
+      <button class="e-btn" @click.stop="startGame" @touchstart.prevent.stop="startGame">&#x5F00;&#x59CB;&#x5F81;&#x670D;</button>
+    </div>
+    <div class="e-fade e-slow" :class="{vis:introStep>=8}">
+      <div class="e-brand">Blue Sky Coming</div>
+    </div>
   </div>
 
   <!-- GAME OVER -->
@@ -121,12 +135,13 @@ canvas{display:block;image-rendering:pixelated}
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
-const{createApp,ref,reactive,onMounted,onUnmounted}=Vue;
+const{createApp,ref,reactive,onMounted,onUnmounted,watch,nextTick}=Vue;
 
 createApp({
 setup(){
 const canvasRef=ref(null);
 const state=ref('start');
+const introStep=ref(0);
 const score=ref(0);
 const coins=ref(0);
 const lives=ref(5);
@@ -160,10 +175,12 @@ const keys={},ts={l:false,r:false,j:false,s:false};
 
 // ===================== AUDIO =====================
 let audioCtx,musicOn=false;
+let epicMusicPlayed=false;
 function ensureAudio(){
   if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended')audioCtx.resume();
-  if(!musicOn){musicOn=true;playBGM()}
+  if(state.value==='start'&&!epicMusicPlayed){epicMusicPlayed=true;playEpicMusic()}
+  if(state.value==='playing'&&!musicOn){musicOn=true;playBGM()}
 }
 function playBGM(){
   const bpm=145,bl=60/bpm,bar=bl*4,master=audioCtx.createGain();
@@ -588,28 +605,213 @@ function drawPlane(e){
 function starShape(cx,cy,sp,oR,iR){let r=Math.PI/2*3;const s=Math.PI/sp;ctx.beginPath();ctx.moveTo(cx,cy-oR);for(let i=0;i<sp;i++){ctx.lineTo(cx+Math.cos(r)*oR,cy+Math.sin(r)*oR);r+=s;ctx.lineTo(cx+Math.cos(r)*iR,cy+Math.sin(r)*iR);r+=s}ctx.closePath();ctx.fill()}
 
 // ===================== GAME CONTROL =====================
-function startGame(){ensureAudio();state.value='playing';score.value=0;lives.value=5;coins.value=0;level.value=1;loadLvl(1)}
-function resetGame(){ensureAudio();state.value='start'}
+function startGame(){ensureAudio();state.value='playing';score.value=0;lives.value=5;coins.value=0;level.value=1;loadLvl(1);epicAnim=false}
+function resetGame(){epicMusicPlayed=false;musicOn=false;ensureAudio();state.value='start';startEpicIntro()}
 function nextAction(){ensureAudio();if(level.value<totalLevels){level.value++;loadLvl(level.value);state.value='playing'}else resetGame()}
 
 function gameLoop(){frame++;update();drawGame();requestAnimationFrame(gameLoop)}
+
+// ===================== EPIC CINEMATIC INTRO =====================
+let epicCtx,epicParts=[],epicRing=0,epicTime=0,epicAnim;
+function startEpicIntro(){
+  introStep.value=0;epicTime=0;epicParts=[];epicRing=0;
+  nextTick(()=>{
+    const ec=document.getElementById('epicCanvas');
+    if(!ec)return;
+    ec.width=window.innerWidth;ec.height=window.innerHeight;
+    epicCtx=ec.getContext('2d');
+    // Spawn golden dust particles
+    for(let i=0;i<120;i++){epicParts.push({x:Math.random()*ec.width,y:Math.random()*ec.height,vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.5-0.1,size:Math.random()*2.5+0.5,alpha:Math.random()*0.6+0.1,life:999})}
+    if(!epicAnim)epicAnimLoop();
+  });
+  // Timed text reveals - cinematic pacing
+  setTimeout(()=>{introStep.value=1},600);
+  setTimeout(()=>{introStep.value=2},1800);
+  setTimeout(()=>{introStep.value=3},3200);
+  setTimeout(()=>{introStep.value=4},4800);
+  setTimeout(()=>{introStep.value=5},6200);
+  setTimeout(()=>{introStep.value=6},7500);
+  setTimeout(()=>{introStep.value=7},8500);
+  setTimeout(()=>{introStep.value=8},9500);
+}
+
+function epicAnimLoop(){
+  epicAnim=true;
+  const ec=document.getElementById('epicCanvas');
+  if(!ec||!epicCtx||state.value!=='start'){epicAnim=false;return}
+  const w=ec.width,h=ec.height;
+  epicTime++;
+  // Dark background with subtle vignette
+  epicCtx.fillStyle='rgba(5,3,8,0.06)';epicCtx.fillRect(0,0,w,h);
+  if(epicTime<3){epicCtx.fillStyle='#050308';epicCtx.fillRect(0,0,w,h)}
+
+  // Central golden ring of power
+  epicRing+=(introStep.value>=3?0.008:0.003);
+  const cx=w/2,cy=h*0.44;
+  const ringR=Math.min(w,h)*0.22+Math.sin(epicTime*0.015)*8;
+  // Outer ethereal glow
+  const grd=epicCtx.createRadialGradient(cx,cy,ringR*0.5,cx,cy,ringR*1.8);
+  grd.addColorStop(0,'rgba(180,140,60,0)');
+  grd.addColorStop(0.5,`rgba(180,140,60,${0.015+Math.sin(epicTime*0.02)*0.008})`);
+  grd.addColorStop(1,'rgba(180,140,60,0)');
+  epicCtx.fillStyle=grd;epicCtx.fillRect(0,0,w,h);
+  // Ring
+  epicCtx.save();epicCtx.translate(cx,cy);epicCtx.rotate(epicRing);
+  for(let i=0;i<2;i++){
+    const r=ringR+i*8;
+    epicCtx.strokeStyle=`rgba(200,170,90,${0.06+Math.sin(epicTime*0.025+i)*0.03})`;
+    epicCtx.lineWidth=1+i*0.5;
+    epicCtx.beginPath();epicCtx.arc(0,0,r,0,Math.PI*2);epicCtx.stroke();
+  }
+  // Runes / glyphs on ring
+  const glyphs='\u2726\u2727\u2728\u2729\u272A\u2730\u2731\u2732\u2733\u2734\u2735\u2736';
+  epicCtx.font='12px serif';epicCtx.textAlign='center';
+  for(let i=0;i<12;i++){
+    const a=Math.PI*2*i/12;
+    const gx=Math.cos(a)*ringR,gy=Math.sin(a)*ringR;
+    epicCtx.fillStyle=`rgba(200,180,110,${0.15+Math.sin(epicTime*0.03+i)*0.1})`;
+    epicCtx.fillText(glyphs[i],gx,gy+4);
+  }
+  epicCtx.restore();
+
+  // Light beams from center (appear at step 3)
+  if(introStep.value>=3){
+    for(let i=0;i<6;i++){
+      const a=epicTime*0.005+Math.PI*2*i/6;
+      const len=Math.min(w,h)*0.6;
+      const grd2=epicCtx.createLinearGradient(cx,cy,cx+Math.cos(a)*len,cy+Math.sin(a)*len);
+      grd2.addColorStop(0,`rgba(200,170,100,${0.02+Math.sin(epicTime*0.01+i)*0.01})`);
+      grd2.addColorStop(1,'rgba(200,170,100,0)');
+      epicCtx.strokeStyle=grd2;epicCtx.lineWidth=2+Math.sin(epicTime*0.02+i)*1;
+      epicCtx.beginPath();epicCtx.moveTo(cx,cy);epicCtx.lineTo(cx+Math.cos(a)*len,cy+Math.sin(a)*len);epicCtx.stroke();
+    }
+  }
+
+  // Golden dust particles
+  for(const p of epicParts){
+    p.x+=p.vx+Math.sin(epicTime*0.01+p.y*0.01)*0.15;
+    p.y+=p.vy;
+    if(p.y<-10){p.y=h+10;p.x=Math.random()*w}
+    if(p.x<0)p.x=w;if(p.x>w)p.x=0;
+    const flicker=0.5+Math.sin(epicTime*0.05+p.x*0.1)*0.5;
+    epicCtx.fillStyle=`rgba(220,190,120,${p.alpha*flicker})`;
+    epicCtx.fillRect(p.x,p.y,p.size,p.size);
+    // Occasional bright sparkle
+    if(Math.random()<0.002){epicCtx.fillStyle='rgba(255,240,200,0.8)';epicCtx.fillRect(p.x-1,p.y-1,p.size+2,p.size+2)}
+  }
+
+  // Vertical light pillars (step 5+)
+  if(introStep.value>=5){
+    for(let i=0;i<3;i++){
+      const px=cx+(i-1)*w*0.25;
+      const grd3=epicCtx.createLinearGradient(px,0,px,h);
+      grd3.addColorStop(0,'rgba(200,170,100,0)');
+      grd3.addColorStop(0.3,`rgba(200,170,100,${0.01+Math.sin(epicTime*0.008+i*2)*0.008})`);
+      grd3.addColorStop(0.7,`rgba(200,170,100,${0.01+Math.sin(epicTime*0.008+i*2)*0.008})`);
+      grd3.addColorStop(1,'rgba(200,170,100,0)');
+      epicCtx.fillStyle=grd3;epicCtx.fillRect(px-15,0,30,h);
+    }
+  }
+
+  // Subtle fog at bottom
+  const fogGrd=epicCtx.createLinearGradient(0,h*0.75,0,h);
+  fogGrd.addColorStop(0,'rgba(5,3,8,0)');
+  fogGrd.addColorStop(1,`rgba(15,10,5,${0.15+Math.sin(epicTime*0.01)*0.05})`);
+  epicCtx.fillStyle=fogGrd;epicCtx.fillRect(0,h*0.75,w,h*0.25);
+
+  requestAnimationFrame(epicAnimLoop);
+}
+
+// Epic orchestral intro music
+function playEpicMusic(){
+  if(!audioCtx)return;
+  const t=audioCtx.currentTime;
+  const master=audioCtx.createGain();master.gain.value=0.2;master.connect(audioCtx.destination);
+  const rev=audioCtx.createConvolver();
+  const revLen=audioCtx.sampleRate*3;const revBuf=audioCtx.createBuffer(2,revLen,audioCtx.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=revBuf.getChannelData(ch);for(let i=0;i<revLen;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/revLen*4)}
+  rev.buffer=revBuf;rev.connect(master);
+  const dry=audioCtx.createGain();dry.gain.value=0.6;dry.connect(master);
+  const wet=audioCtx.createGain();wet.gain.value=0.4;wet.connect(rev);
+  function pad(freq,start,dur,vol){
+    const o1=audioCtx.createOscillator(),o2=audioCtx.createOscillator(),o3=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o1.type='sine';o1.frequency.value=freq;
+    o2.type='sine';o2.frequency.value=freq*1.002;
+    o3.type='sine';o3.frequency.value=freq*0.5;
+    const lp=audioCtx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=800;
+    g.gain.setValueAtTime(0,t+start);
+    g.gain.linearRampToValueAtTime(vol,t+start+dur*0.3);
+    g.gain.setValueAtTime(vol,t+start+dur*0.6);
+    g.gain.linearRampToValueAtTime(0,t+start+dur);
+    o1.connect(lp);o2.connect(lp);o3.connect(lp);lp.connect(g);g.connect(dry);g.connect(wet);
+    o1.start(t+start);o2.start(t+start);o3.start(t+start);
+    o1.stop(t+start+dur+0.1);o2.stop(t+start+dur+0.1);o3.stop(t+start+dur+0.1);
+  }
+  function horn(freq,start,dur,vol){
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sawtooth';o.frequency.value=freq;
+    const lp=audioCtx.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(400,t+start);lp.frequency.linearRampToValueAtTime(1200,t+start+dur*0.3);lp.frequency.linearRampToValueAtTime(600,t+start+dur);
+    g.gain.setValueAtTime(0,t+start);g.gain.linearRampToValueAtTime(vol,t+start+0.3);g.gain.setValueAtTime(vol,t+start+dur*0.7);g.gain.linearRampToValueAtTime(0,t+start+dur);
+    o.connect(lp);lp.connect(g);g.connect(dry);g.connect(wet);o.start(t+start);o.stop(t+start+dur+0.1);
+  }
+  function timpani(start,freq){
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sine';o.frequency.setValueAtTime(freq||60,t+start);o.frequency.exponentialRampToValueAtTime(40,t+start+1.5);
+    g.gain.setValueAtTime(0.5,t+start);g.gain.exponentialRampToValueAtTime(0.001,t+start+2);
+    o.connect(g);g.connect(dry);o.start(t+start);o.stop(t+start+2.1);
+    const n=audioCtx.createBufferSource(),b=audioCtx.createBuffer(1,audioCtx.sampleRate*0.3,audioCtx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/d.length*6);
+    n.buffer=b;const g2=audioCtx.createGain();g2.gain.setValueAtTime(0.3,t+start);g2.gain.exponentialRampToValueAtTime(0.001,t+start+0.4);
+    n.connect(g2);g2.connect(dry);n.start(t+start);
+  }
+  function choir(freq,start,dur,vol){
+    for(let i=0;i<3;i++){
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='sine';o.frequency.value=freq*(1+i*0.001*(Math.random()-0.5));
+      const vib=audioCtx.createOscillator();vib.frequency.value=4+Math.random();const vibG=audioCtx.createGain();vibG.gain.value=3;vib.connect(vibG);vibG.connect(o.frequency);vib.start(t+start);vib.stop(t+start+dur+0.1);
+      g.gain.setValueAtTime(0,t+start);g.gain.linearRampToValueAtTime(vol/3,t+start+dur*0.25);g.gain.setValueAtTime(vol/3,t+start+dur*0.7);g.gain.linearRampToValueAtTime(0,t+start+dur);
+      o.connect(g);g.connect(dry);g.connect(wet);o.start(t+start);o.stop(t+start+dur+0.1);
+    }
+  }
+  // Movement 1: Dark ambient pad (0-3s)
+  pad(65.4,0,4,0.15);pad(98,0,4,0.1);pad(130.8,0.5,3.5,0.08);
+  timpani(0.5);
+  // Movement 2: Rising strings + horn call (3-6s)
+  pad(130.8,3,4,0.15);pad(164.8,3,4,0.12);pad(196,3.5,3.5,0.1);
+  horn(196,3.2,2.5,0.08);horn(261.6,4,2,0.07);
+  timpani(3.2,55);timpani(4.5,65);
+  // Movement 3: Main theme - epic brass (6-10s)
+  horn(261.6,6,1.5,0.12);horn(329.6,7.2,1,0.1);horn(392,8,1.5,0.13);horn(523.2,9,2,0.14);
+  pad(130.8,6,5,0.15);pad(196,6,5,0.12);pad(261.6,6.5,4.5,0.1);
+  choir(392,7,4,0.08);choir(523.2,8,3,0.07);choir(659.2,8.5,2.5,0.06);
+  timpani(6,50);timpani(7.5,60);timpani(9,70);
+  // Movement 4: Climax (10-13s)
+  horn(523.2,10,1.2,0.15);horn(659.2,10.8,1.2,0.14);horn(784,11.5,2,0.16);
+  pad(130.8,10,4,0.18);pad(261.6,10,4,0.15);pad(392,10.5,3.5,0.12);pad(523.2,11,3,0.1);
+  choir(523.2,10,3.5,0.1);choir(659.2,10.5,3,0.09);choir(784,11,2.5,0.08);
+  timpani(10,50);timpani(10.8,60);timpani(11.5,70);timpani(12,80);
+}
 
 // ===================== MOUNT =====================
 onMounted(()=>{
   const c=document.getElementById('game');
   ctx=c.getContext('2d');
-  function resize2(){const w=window.innerWidth,h=window.innerHeight,ch=('ontouchstart'in window)?130:0,s=Math.min(w/BW,(h-ch-50)/BH);c.style.width=(BW*s)+'px';c.style.height=(BH*s)+'px';c.width=BW;c.height=BH}
+  function resize2(){
+    const w=window.innerWidth,h=window.innerHeight,ch=('ontouchstart'in window)?130:0,s=Math.min(w/BW,(h-ch-50)/BH);
+    c.style.width=(BW*s)+'px';c.style.height=(BH*s)+'px';c.width=BW;c.height=BH;
+    const ec=document.getElementById('epicCanvas');if(ec){ec.width=w;ec.height=h}
+  }
   window.addEventListener('resize',resize2);resize2();
 
   window.addEventListener('keydown',e=>{keys[e.code]=true});
   window.addEventListener('keyup',e=>{keys[e.code]=false});
-  // Touch
   function sT(id,k){const el=document.getElementById(id);if(!el)return;const on=e=>{e.preventDefault();ensureAudio();ts[k]=true;el.classList.add('active')};const off=e=>{e.preventDefault();ts[k]=false;el.classList.remove('active')};el.addEventListener('touchstart',on,{passive:false});el.addEventListener('touchend',off,{passive:false});el.addEventListener('touchcancel',off,{passive:false})}
   sT('bl','l');sT('br','r');sT('bj','j');sT('bf','s');
+  startEpicIntro();
   gameLoop();
 });
 
-return{state,score,coins,lives,level,starPow,nioModels,startGame,resetGame,nextAction,canvas:canvasRef};
+return{state,introStep,score,coins,lives,level,starPow,nioModels,startGame,resetGame,nextAction,canvas:canvasRef};
 }
 }).mount('#app');
 </script>
