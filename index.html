@@ -278,20 +278,17 @@ function update(){
 
   player.vy+=GRAV;if(player.vy>15)player.vy=15;
   player.x+=player.vx;if(player.x<camX-200)player.x=camX-200;rtx(player);
-  const wasGoingUp=player.vy<0;
-  player.y+=player.vy;player.og=false;rty(player);
 
-  // Head bump - check 3 points across player head (use saved velocity)
-  if(wasGoingUp){
-    const headY=player.y-2;
-    const checks=[player.x+4,player.x+player.w/2,player.x+player.w-4];
+  // Head bump BEFORE vertical tile resolution
+  if(player.vy<0){
+    const nextY=player.y+player.vy;
+    const checks=[player.x+2,player.x+player.w/2,player.x+player.w-2];
     for(const hx of checks){
-      const tile=tAt(hx,headY);
+      const tile=tAt(hx,nextY);
       if(!tile)continue;
       if(tile.tp==='question'&&!tile.hit){
         tile.hit=true;tile.tp='hardBrick';coins.value++;score.value+=100;sfx('coin');
         addP(tile.x+TL/2,tile.y,-6,20,'#ff0',8);addFT('+100',tile.x,tile.y-20,'#ff0');
-        // Always spawn a skill power-up from ? blocks
         const skills=['big','fast','multi','shield','star','bat','mush','magnet'];
         const sk=skills[Math.floor(Math.random()*skills.length)];
         mushI.push({x:tile.x,y:tile.y-TL,w:32,h:32,vx:2,vy:-2,og:false,act:true,tp:sk});
@@ -299,6 +296,8 @@ function update(){
       }else if(tile.tp==='brick'){tiles.splice(tiles.indexOf(tile),1);score.value+=50;brickExpl(tile.x,tile.y);shake(3,1);break}
     }
   }
+
+  player.y+=player.vy;player.og=false;rty(player);
 
   const ct=player.x-BW/3;if(ct>camX)camX=ct;if(camX<0)camX=0;
   if(player.y>BH+100)pDie();
