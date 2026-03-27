@@ -64,7 +64,8 @@ canvas{display:block;image-rendering:pixelated}
     <div class="hud-item"><span class="label">COINS</span>{{coins}}</div>
     <div class="hud-item lives"><span class="label">LIVES</span>{{'♥'.repeat(Math.min(lives,10))}}</div>
     <div class="hud-item"><span class="label">LEVEL</span>{{level}}/20</div>
-    <div class="hud-item" v-if="starPow>0"><span class="label">STAR</span><div class="star-bar" :style="{width:starPow/6+'px'}"></div></div>
+    <div class="hud-item" v-if="starPow>0" style="color:#ff0"><span class="label">STAR</span><div class="star-bar" :style="{width:starPow/6+'px'}"></div></div>
+    <div class="hud-item" v-if="powerups.length" style="color:#f80"><span class="label">BUFFS</span>{{powerups.join(' ')}}</div>
     <div class="hud-item nio">NIO × 李斌</div>
   </div>
 
@@ -115,7 +116,7 @@ const BW=960,BH=640,TL=40,GRAV=0.6,JF=-13,MS=5,BS=10;
 let ctx,frame=0,camX=0;
 let tiles=[],ents=[],bulls=[],parts=[],ftxts=[],coinI=[],mushI=[];
 let shakeX=0,shakeY=0,shakeDur=0;
-let player={x:80,y:0,w:32,h:40,vx:0,vy:0,og:false,f:1,sc:0,af:0,at:0,inv:0,dead:false};
+let player={x:80,y:0,w:32,h:40,vx:0,vy:0,og:false,f:1,sc:0,af:0,at:0,inv:0,dead:false,big:0,fast:0,multi:0,shield:0,magnet:0};
 const keys={},ts={l:false,r:false,j:false,s:false};
 
 // ===================== AUDIO =====================
@@ -234,7 +235,7 @@ function loadLvl(n){
   // NIO charging stations
   for(let i=0;i<1+Math.floor(n/4);i++){const sx=150+Math.floor(Math.random()*(lw-300));for(let j=0;j<5;j++)coinI.push({x:sx+j*28,y:10*TL,w:24,h:24,col:false,af:0,nio:true})}
 
-  player.x=80;player.y=11*TL;player.vx=0;player.vy=0;player.og=false;player.dead=false;player.inv=0;starPow.value=0;
+  player.x=80;player.y=11*TL;player.vx=0;player.vy=0;player.og=false;player.dead=false;player.inv=0;player.w=32;player.h=40;player.big=0;player.fast=0;player.multi=0;player.shield=0;player.magnet=0;starPow.value=0;
 }
 
 // ===================== PHYSICS =====================
@@ -256,9 +257,19 @@ function update(){
   const J=keys.ArrowUp||keys.KeyW||keys.Space||ts.j,S=keys.KeyX||keys.KeyJ||ts.s;
 
   if(!player.dead){
-    if(L){player.vx=-MS;player.f=-1}else if(R){player.vx=MS;player.f=1}else{player.vx*=0.7;if(Math.abs(player.vx)<0.5)player.vx=0}
-    if(J&&player.og){player.vy=JF;player.og=false;sfx('jump')}
-    if(S&&player.sc<=0){sfx('shoot');const bx=player.f>0?player.x+player.w:player.x-8;bulls.push({x:bx,y:player.y+player.h/2-4,w:10,h:6,vx:BS*player.f,vy:0,own:'p',life:60});player.sc=10}
+    const spd=player.fast>0?MS*1.7:MS;
+    if(L){player.vx=-spd;player.f=-1}else if(R){player.vx=spd;player.f=1}else{player.vx*=0.7;if(Math.abs(player.vx)<0.5)player.vx=0}
+    if(J&&player.og){player.vy=player.big>0?JF*1.15:JF;player.og=false;sfx('jump')}
+    if(S&&player.sc<=0){sfx('shoot');const bx=player.f>0?player.x+player.w:player.x-8;
+      const bSize=player.big>0?{w:14,h:10}:{w:10,h:6};
+      const bDmg=player.big>0?2:1;
+      bulls.push({x:bx,y:player.y+player.h/2-4,w:bSize.w,h:bSize.h,vx:BS*player.f,vy:0,own:'p',life:60,dmg:bDmg});
+      if(player.multi>0){
+        bulls.push({x:bx,y:player.y+player.h/2-14,w:bSize.w,h:bSize.h,vx:BS*player.f,vy:-1.5,own:'p',life:50,dmg:bDmg});
+        bulls.push({x:bx,y:player.y+player.h/2+6,w:bSize.w,h:bSize.h,vx:BS*player.f,vy:1.5,own:'p',life:50,dmg:bDmg});
+      }
+      player.sc=player.fast>0?6:10;
+    }
   }
   if(player.sc>0)player.sc--;
   if(player.inv>0)player.inv--;
@@ -269,12 +280,24 @@ function update(){
   player.x+=player.vx;if(player.x<camX)player.x=camX;rtx(player);
   player.y+=player.vy;player.og=false;rty(player);
 
-  // Head bump
-  if(player.vy<0){const tile=tAt(player.x+player.w/2,player.y-2);if(tile){
-    if(tile.tp==='question'&&!tile.hit){tile.hit=true;tile.tp='hardBrick';coins.value++;score.value+=100;sfx('coin');addP(tile.x+TL/2,tile.y,-6,20,'#ff0',8);addFT('+100',tile.x,tile.y-20,'#ff0');
-      if(Math.random()<0.4)mushI.push({x:tile.x,y:tile.y-TL,w:32,h:32,vx:2,vy:0,og:false,act:true,tp:Math.random()<0.35?'mush':Math.random()<0.6?'star':'bat'})}
-    else if(tile.tp==='brick'){tiles.splice(tiles.indexOf(tile),1);score.value+=50;brickExpl(tile.x,tile.y)}
-  }}
+  // Head bump - check 3 points across player head
+  if(player.vy<0){
+    const headY=player.y-2;
+    const checks=[player.x+4,player.x+player.w/2,player.x+player.w-4];
+    for(const hx of checks){
+      const tile=tAt(hx,headY);
+      if(!tile)continue;
+      if(tile.tp==='question'&&!tile.hit){
+        tile.hit=true;tile.tp='hardBrick';coins.value++;score.value+=100;sfx('coin');
+        addP(tile.x+TL/2,tile.y,-6,20,'#ff0',8);addFT('+100',tile.x,tile.y-20,'#ff0');
+        // Always spawn a skill power-up from ? blocks
+        const skills=['big','fast','multi','shield','star','bat','mush','magnet'];
+        const sk=skills[Math.floor(Math.random()*skills.length)];
+        mushI.push({x:tile.x,y:tile.y-TL,w:32,h:32,vx:2,vy:-2,og:false,act:true,tp:sk});
+        shake(4,2);break;
+      }else if(tile.tp==='brick'){tiles.splice(tiles.indexOf(tile),1);score.value+=50;brickExpl(tile.x,tile.y);shake(3,1);break}
+    }
+  }
 
   const ct=player.x-BW/3;if(ct>camX)camX=ct;if(camX<0)camX=0;
   if(player.y>BH+100)pDie();
@@ -285,7 +308,7 @@ function update(){
     if(b.life<=0||b.x<camX-50||b.x>camX+BW+50){bulls.splice(i,1);continue}
     const tile=tAt(b.x+b.w/2,b.y+b.h/2);
     if(sol(tile)){if(tile.tp==='brick'){tiles.splice(tiles.indexOf(tile),1);brickExpl(tile.x,tile.y);score.value+=50}sparkAt(b.x,b.y);bulls.splice(i,1);continue}
-    if(b.own==='p'){let hit=false;for(const e of ents){if(!e.alive||hit)continue;if(ro(b,e)){e.hp--;sfx('hit');if(e.hp<=0){e.alive=false;score.value+=e.pts||300;addFT('+'+(e.pts||300),e.x,e.y-10,'#ff0');explAt(e.x+e.w/2,e.y+e.h/2,e.isBoss?35:15);sfx('explode');shake(e.isBoss?20:8,e.isBoss?12:5);if(e.tp==='nio')addFT(e.model+' K.O.!',e.x,e.y-30,'#0ff')}else sparkAt(b.x,b.y);bulls.splice(i,1);hit=true}}}
+    if(b.own==='p'){let hit=false;for(const e of ents){if(!e.alive||hit)continue;if(ro(b,e)){e.hp-=(b.dmg||1);sfx('hit');if(e.hp<=0){e.alive=false;score.value+=e.pts||300;addFT('+'+(e.pts||300),e.x,e.y-10,'#ff0');explAt(e.x+e.w/2,e.y+e.h/2,e.isBoss?35:15);sfx('explode');shake(e.isBoss?20:8,e.isBoss?12:5);if(e.tp==='nio')addFT(e.model+' K.O.!',e.x,e.y-30,'#0ff')}else sparkAt(b.x,b.y);bulls.splice(i,1);hit=true}}}
     else{if(ro(b,player)&&!player.dead&&starPow.value<=0&&player.inv<=0){pHit();bulls.splice(i,1)}}
   }
 
@@ -311,14 +334,34 @@ function update(){
     }
   }
 
-  // Coins
-  for(const c of coinI){if(c.col)continue;c.af=(c.af+0.1)%4;if(ro(player,c)&&!player.dead){c.col=true;coins.value++;score.value+=c.nio?200:100;sfx('coin');addFT(c.nio?'+200':'+100',c.x,c.y-10,c.nio?'#00bfff':'#ff0');addP(c.x,c.y,-6,20,'#ff0',8);if(coins.value%20===0){lives.value++;addFT('1UP!',player.x,player.y-30,'#0f0')}}}
+  // Coins (with magnet pull)
+  for(const c of coinI){if(c.col)continue;c.af=(c.af+0.1)%4;
+    if(player.magnet>0){const dx=player.x-c.x,dy=player.y-c.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<250&&dist>5){c.x+=dx/dist*4;c.y+=dy/dist*4}}
+    if(ro(player,c)&&!player.dead){c.col=true;coins.value++;score.value+=c.nio?200:100;sfx('coin');addFT(c.nio?'+200':'+100',c.x,c.y-10,c.nio?'#00bfff':'#ff0');addP(c.x,c.y,-6,20,'#ff0',8);if(coins.value%20===0){lives.value++;addFT('1UP!',player.x,player.y-30,'#0f0')}}}
 
-  // Mushrooms
+  // Power-up timers
+  if(player.big>0){player.big--;if(player.big===0){player.w=32;player.h=40}}
+  if(player.fast>0)player.fast--;
+  if(player.multi>0)player.multi--;
+  if(player.shield>0)player.shield--;
+  if(player.magnet>0)player.magnet--;
+
+  // Mushrooms / Power-ups
   for(let i=mushI.length-1;i>=0;i--){
     const m=mushI[i];if(!m.act)continue;m.vy+=GRAV;m.x+=m.vx;m.y+=m.vy;m.og=false;
     for(const t of tiles){if(!sol(t))continue;if(ro(m,{x:t.x,y:t.y,w:TL,h:TL})){if(m.vy>0&&m.y+m.h-t.y<15){m.y=t.y-m.h;m.vy=0;m.og=true}else m.vx*=-1}}
-    if(ro(player,m)&&!player.dead){m.act=false;sfx('powerup');if(m.tp==='mush'){score.value+=1000;lives.value++;addFT('1UP!',player.x,player.y-30,'#0f0')}else if(m.tp==='star'){starPow.value=600;score.value+=500;addFT('STAR!',player.x,player.y-30,'#ff0')}else{starPow.value=300;lives.value++;score.value+=800;addFT('NIO POWER!',player.x,player.y-30,'#00bfff')}}
+    // Magnet: pull items toward player
+    if(player.magnet>0){const dx=player.x-m.x,dy=player.y-m.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<200&&dist>5){m.x+=dx/dist*3;m.y+=dy/dist*3}}
+    if(ro(player,m)&&!player.dead){m.act=false;sfx('powerup');score.value+=300;shake(5,3);
+      if(m.tp==='mush'){lives.value++;addFT('\u2764 1UP!',player.x,player.y-30,'#0f0')}
+      else if(m.tp==='star'){starPow.value=600;addFT('\u2605 \u65E0\u654C!',player.x,player.y-30,'#ff0')}
+      else if(m.tp==='bat'){starPow.value=300;lives.value++;addFT('\u26A1 NIO POWER!',player.x,player.y-30,'#00bfff')}
+      else if(m.tp==='big'){player.big=480;player.w=44;player.h=52;player.y-=12;addFT('\u2B06 \u53D8\u5927!',player.x,player.y-30,'#f80')}
+      else if(m.tp==='fast'){player.fast=600;addFT('\u26A1 \u52A0\u901F!',player.x,player.y-30,'#0ff')}
+      else if(m.tp==='multi'){player.multi=480;addFT('\u2734 \u4E09\u8FDE\u53D1!',player.x,player.y-30,'#f0f')}
+      else if(m.tp==='shield'){player.shield=480;player.inv=480;addFT('\u26E8 \u62A4\u76FE!',player.x,player.y-30,'#4af')}
+      else if(m.tp==='magnet'){player.magnet=600;addFT('\u27B0 \u78C1\u94C1!',player.x,player.y-30,'#fa0')}
+    }
     if(m.y>BH+50)m.act=false;
   }
 
@@ -330,7 +373,7 @@ function update(){
   for(const t of tiles){if(t.tp==='flag'&&ro(player,{x:t.x,y:t.y,w:TL,h:TL})){score.value+=2000+level.value*500;sfx('win');state.value='win'}}
 }
 
-function pHit(){if(player.inv>0||player.dead)return;sfx('hit');shake(10,6);player.inv=90;lives.value--;if(lives.value<=0)pDie()}
+function pHit(){if(player.inv>0||player.dead||player.shield>0)return;sfx('hit');shake(10,6);player.inv=90;lives.value--;if(lives.value<=0)pDie()}
 function pDie(){player.dead=true;player.vy=JF;lives.value=Math.max(lives.value,0);sfx('explode');shake(15,10);setTimeout(()=>{if(lives.value>0)loadLvl(level.value);else state.value='gameover'},1500)}
 
 // Particles helpers
@@ -385,14 +428,20 @@ function drawGame(){
   // Mushrooms
   for(const m of mushI){
     if(!m.act)continue;
-    if(m.tp==='mush'){ctx.fillStyle='#fff';ctx.fillRect(m.x+4,m.y+14,24,16);ctx.fillStyle='#e44';ctx.beginPath();ctx.arc(m.x+16,m.y+14,14,Math.PI,0);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(m.x+10,m.y+6,4,0,Math.PI*2);ctx.arc(m.x+22,m.y+6,4,0,Math.PI*2);ctx.fill()}
-    else if(m.tp==='star'){ctx.fillStyle=`rgba(255,255,0,${0.6+Math.sin(frame*0.2)*0.3})`;ctx.save();ctx.translate(m.x+16,m.y+16);ctx.rotate(frame*0.05);starShape(0,0,5,14,7);ctx.restore()}
-    else{
-      // NIO Battery
-      ctx.fillStyle='#00bfff';ctx.fillRect(m.x+2,m.y+4,28,24);ctx.fillStyle='#003';ctx.fillRect(m.x+4,m.y+6,24,20);
-      ctx.fillStyle='#0f8';ctx.fillRect(m.x+6,m.y+10,Math.sin(frame*0.15)*4+14,12);
-      ctx.fillStyle='#ff0';ctx.beginPath();ctx.moveTo(m.x+20,m.y);ctx.lineTo(m.x+14,m.y+12);ctx.lineTo(m.x+18,m.y+12);ctx.lineTo(m.x+12,m.y+28);ctx.lineTo(m.x+22,m.y+14);ctx.lineTo(m.x+18,m.y+14);ctx.closePath();ctx.fill();
-    }
+    const mx=m.x,my=m.y;
+    // Glow behind all power-ups
+    ctx.save();ctx.shadowBlur=12;
+    const skColors={mush:'#e44',star:'#ff0',bat:'#00bfff',big:'#f80',fast:'#0ff',multi:'#f0f',shield:'#4af',magnet:'#fa0'};
+    ctx.shadowColor=skColors[m.tp]||'#fff';
+    if(m.tp==='mush'){ctx.fillStyle='#fff';ctx.fillRect(mx+4,my+14,24,16);ctx.fillStyle='#e44';ctx.beginPath();ctx.arc(mx+16,my+14,14,Math.PI,0);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(mx+10,my+6,4,0,Math.PI*2);ctx.arc(mx+22,my+6,4,0,Math.PI*2);ctx.fill()}
+    else if(m.tp==='star'){ctx.fillStyle=`rgba(255,255,0,${0.6+Math.sin(frame*0.2)*0.3})`;ctx.save();ctx.translate(mx+16,my+16);ctx.rotate(frame*0.05);starShape(0,0,5,14,7);ctx.restore()}
+    else if(m.tp==='bat'){ctx.fillStyle='#00bfff';ctx.fillRect(mx+2,my+4,28,24);ctx.fillStyle='#003';ctx.fillRect(mx+4,my+6,24,20);ctx.fillStyle='#0f8';ctx.fillRect(mx+6,my+10,Math.sin(frame*0.15)*4+14,12);ctx.fillStyle='#ff0';ctx.font='bold 14px Arial';ctx.textAlign='center';ctx.fillText('\u26A1',mx+16,my+22)}
+    else if(m.tp==='big'){ctx.fillStyle='#f80';ctx.beginPath();ctx.arc(mx+16,my+16,14,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 16px Arial';ctx.textAlign='center';ctx.fillText('\u2B06',mx+16,my+22)}
+    else if(m.tp==='fast'){ctx.fillStyle='#0ff';ctx.beginPath();ctx.arc(mx+16,my+16,14,0,Math.PI*2);ctx.fill();ctx.fillStyle='#003';ctx.font='bold 14px Arial';ctx.textAlign='center';ctx.fillText('\u26A1',mx+16,my+21)}
+    else if(m.tp==='multi'){ctx.fillStyle='#f0f';ctx.beginPath();ctx.arc(mx+16,my+16,14,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.fillText('\u2734',mx+16,my+21)}
+    else if(m.tp==='shield'){ctx.fillStyle='#4af';ctx.beginPath();ctx.moveTo(mx+16,my+2);ctx.lineTo(mx+30,my+12);ctx.lineTo(mx+26,my+28);ctx.lineTo(mx+16,my+32);ctx.lineTo(mx+6,my+28);ctx.lineTo(mx+2,my+12);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.fillText('\u26E8',mx+16,my+21)}
+    else if(m.tp==='magnet'){ctx.fillStyle='#fa0';ctx.beginPath();ctx.arc(mx+16,my+12,12,Math.PI,0);ctx.fill();ctx.fillStyle='#d00';ctx.fillRect(mx+4,my+12,8,16);ctx.fillStyle='#33f';ctx.fillRect(mx+20,my+12,8,16)}
+    ctx.restore();
   }
 
   // Entities
@@ -431,9 +480,12 @@ function drawGame(){
 
 function drawPlayer(){
   const px=player.x,py=player.y,f=player.f,cx=px+player.w/2;
-  // Star glow
+  // Power-up auras
   if(starPow.value>0){ctx.shadowColor=`hsl(${frame*10%360},100%,60%)`;ctx.shadowBlur=25;ctx.fillStyle=`hsla(${frame*10%360},100%,60%,0.3)`;ctx.beginPath();ctx.arc(cx,py+player.h/2,32,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
-  if(player.inv>0&&frame%6<3)return;
+  if(player.shield>0){ctx.strokeStyle=`rgba(60,160,255,${0.4+Math.sin(frame*0.1)*0.2})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,py+player.h/2,player.w*0.8,0,Math.PI*2);ctx.stroke()}
+  if(player.fast>0){ctx.strokeStyle=`rgba(0,255,255,${0.3+Math.sin(frame*0.15)*0.15})`;ctx.lineWidth=1;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(cx-f*15-i*8,py+10+i*10);ctx.lineTo(cx-f*30-i*12,py+10+i*10);ctx.stroke()}}
+  if(player.magnet>0){ctx.strokeStyle=`rgba(255,160,0,${0.25+Math.sin(frame*0.08)*0.15})`;ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,py+player.h/2,40+Math.sin(frame*0.05)*5,0,Math.PI*2);ctx.stroke()}
+  if(player.inv>0&&frame%6<3&&player.shield<=0)return;
 
   // ===== GLOWING HALO + "蔚来李斌" =====
   ctx.save();
@@ -981,7 +1033,8 @@ onMounted(()=>{
   document.addEventListener('keydown',autoMusic);
 });
 
-return{state,introStep,score,coins,lives,level,starPow,nioModels,startGame,resetGame,nextAction,canvas:canvasRef};
+const powerups=Vue.computed(()=>{const p=[];if(player.big>0)p.push('\u2B06\u5927');if(player.fast>0)p.push('\u26A1\u5FEB');if(player.multi>0)p.push('\u2734\u4E09\u53D1');if(player.shield>0)p.push('\u26E8\u76FE');if(player.magnet>0)p.push('\u27B0\u78C1');return p});
+return{state,introStep,score,coins,lives,level,starPow,powerups,nioModels,startGame,resetGame,nextAction,canvas:canvasRef};
 }
 }).mount('#app');
 </script>
