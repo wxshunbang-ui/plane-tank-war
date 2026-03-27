@@ -23,56 +23,79 @@ canvas{display:block;image-rendering:pixelated}
 #bj{bottom:16px;right:80px;width:70px;height:70px;background:rgba(0,255,100,0.12);border-color:rgba(0,255,100,0.3);color:rgba(0,255,100,0.7)}
 #bf{bottom:16px;right:4px;width:70px;height:70px;background:rgba(255,60,60,0.15);border-color:rgba(255,60,60,0.4);color:rgba(255,100,100,0.8);font-size:14px}
 @media(pointer:coarse){#controls{display:block}}
-.overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(0,20,50,0.92),rgba(0,0,0,0.97))}
-.overlay h1{font-size:clamp(32px,7vw,56px);font-weight:900;background:linear-gradient(135deg,#00bfff,#0066ff,#00bfff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 0 20px rgba(0,100,255,0.5))}
-.overlay h2{font-size:clamp(20px,4vw,36px);color:#ffd700;margin:8px 0}
-.overlay .sub{color:#00bfff;font-size:18px;margin:4px 0;letter-spacing:4px}
-.car-parade{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap;justify-content:center;max-width:500px}
-.car-card{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:bold;color:#fff;border:1px solid rgba(255,255,255,0.15);text-align:center}
-.info{color:#aaa;font-size:13px;margin:6px 0;text-align:center;max-width:400px;line-height:1.6}
-.start-btn{margin-top:20px;padding:14px 48px;font-size:20px;font-weight:bold;color:#fff;background:linear-gradient(135deg,#0066ff,#00bfff);border:none;border-radius:30px;cursor:pointer;letter-spacing:2px;animation:pulse 1.5s infinite;box-shadow:0 0 30px rgba(0,100,255,0.4)}
-@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 30px rgba(0,100,255,0.4)}50%{transform:scale(1.05);box-shadow:0 0 50px rgba(0,100,255,0.7)}}
+[v-cloak]{display:none!important}
+.overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.overlay.start-bg{background:radial-gradient(ellipse at 50% 40%,rgba(0,30,80,0.98),rgba(0,0,10,1))}
+.overlay.start-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(0,100,255,0.08) 0%,transparent 60%);animation:bgPulse 4s ease-in-out infinite}
+.overlay.start-bg::after{content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(from 0deg,transparent,rgba(0,100,255,0.03),transparent,rgba(0,191,255,0.04),transparent);animation:bgSpin 20s linear infinite}
+@keyframes bgPulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes bgSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.overlay.go-bg{background:radial-gradient(ellipse at center,rgba(40,0,0,0.95),rgba(0,0,0,0.98))}
+.overlay.win-bg{background:radial-gradient(ellipse at center,rgba(0,20,50,0.92),rgba(0,0,0,0.97))}
+.start-top{font-size:clamp(11px,2.5vw,14px);color:rgba(0,191,255,0.6);letter-spacing:clamp(6px,2vw,16px);text-transform:uppercase;margin-bottom:12px;animation:fadeSlideDown 1s ease-out both;font-weight:300}
+.start-trillion{font-size:clamp(14px,3vw,18px);color:#ffd700;letter-spacing:clamp(3px,1vw,8px);margin-bottom:8px;animation:fadeSlideDown 1.2s ease-out both;font-weight:bold;text-shadow:0 0 20px rgba(255,200,0,0.3)}
+.start-title{font-size:clamp(36px,8vw,64px);font-weight:900;letter-spacing:clamp(2px,1vw,6px);background:linear-gradient(135deg,#fff 0%,#00bfff 40%,#0066ff 60%,#00bfff 80%,#fff 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeSlideUp 1s ease-out both,gradientShift 4s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(0,100,255,0.5));line-height:1.2;text-align:center}
+.start-subtitle{font-size:clamp(18px,4vw,28px);color:#fff;font-weight:300;letter-spacing:clamp(4px,1.5vw,12px);margin-top:4px;animation:fadeSlideUp 1.3s ease-out both;text-shadow:0 0 15px rgba(0,191,255,0.4)}
+.start-nio{font-size:clamp(40px,9vw,72px);font-weight:900;color:transparent;-webkit-text-stroke:2px rgba(0,191,255,0.25);letter-spacing:clamp(8px,3vw,20px);margin:16px 0;animation:fadeIn 2s ease-out both;position:relative}
+.start-nio::after{content:'NIO';position:absolute;left:0;right:0;top:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;background:linear-gradient(180deg,rgba(0,191,255,0.15),transparent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0}
+.start-line{width:clamp(120px,40vw,320px);height:1px;background:linear-gradient(90deg,transparent,rgba(0,191,255,0.5),transparent);margin:12px 0;animation:fadeIn 1.5s ease-out both}
+.car-parade{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap;justify-content:center;max-width:520px;animation:fadeIn 2s ease-out both}
+.car-card{padding:5px 10px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;border:1px solid rgba(255,255,255,0.1);text-align:center;backdrop-filter:blur(4px);transition:transform 0.2s,box-shadow 0.2s}
+.car-card:hover{transform:scale(1.1);box-shadow:0 0 12px rgba(0,191,255,0.3)}
+.info{color:rgba(255,255,255,0.5);font-size:clamp(11px,2.2vw,13px);margin:8px 0;text-align:center;max-width:400px;line-height:1.7;animation:fadeIn 2.2s ease-out both}
+.start-btn{margin-top:16px;padding:clamp(10px,2vw,16px) clamp(32px,8vw,56px);font-size:clamp(16px,3.5vw,22px);font-weight:bold;color:#fff;background:linear-gradient(135deg,#0044cc,#00aaff);border:none;border-radius:40px;cursor:pointer;letter-spacing:3px;animation:fadeSlideUp 2.5s ease-out both,btnGlow 2s ease-in-out infinite;box-shadow:0 0 30px rgba(0,100,255,0.3);position:relative;overflow:hidden;z-index:1}
+.start-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,0.1),transparent);animation:btnSpin 3s linear infinite;z-index:-1}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 30px rgba(0,100,255,0.3)}50%{box-shadow:0 0 50px rgba(0,150,255,0.6)}}
+@keyframes btnSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.brand{color:rgba(0,191,255,0.3);font-size:clamp(10px,1.8vw,12px);margin-top:16px;letter-spacing:clamp(4px,1.5vw,8px);animation:fadeIn 3s ease-out both}
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .level-clear{animation:slideIn .5s ease-out}
 @keyframes slideIn{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.brand{color:rgba(0,191,255,0.4);font-size:12px;margin-top:16px;letter-spacing:6px}
+.go-title{font-size:clamp(36px,8vw,60px);font-weight:900;color:#ff2222;text-shadow:0 0 40px rgba(255,0,0,0.5);animation:fadeSlideUp 0.5s ease-out}
+.win-title{font-size:clamp(32px,7vw,52px);font-weight:900;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,200,0,0.5));animation:slideIn 0.5s ease-out}
 </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
   <!-- START SCREEN -->
-  <div class="overlay" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame">
-    <div class="sub">NIO × MARIO</div>
-    <h1>飞机坦克大战</h1>
-    <h2>蔚来李斌 Edition</h2>
+  <div class="overlay start-bg" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame">
+    <div class="start-top">NIO &times; MARIO EDITION</div>
+    <div class="start-trillion">&#x4E07;&#x4EBF;&#x84DA;&#x6765; CEO</div>
+    <div class="start-title">&#x52C7;&#x95EF;&#x7EB3;&#x65AF;&#x8FBE;&#x514B;</div>
+    <div class="start-subtitle">&#x91CD;&#x8FD4;&#x5B87;&#x5B99;&#x7B2C;&#x4E00;&#x8F66;&#x4F01;&#xFF01;</div>
+    <div class="start-nio">NIO</div>
+    <div class="start-line"></div>
     <div class="car-parade">
-      <div class="car-card" v-for="c in nioModels" :style="{background:c.color}">{{c.name}}<br><span style="font-size:9px;opacity:0.7">{{c.desc}}</span></div>
+      <div class="car-card" v-for="c in nioModels" :key="c.name" :style="{background:c.color}">{{c.name}}</div>
     </div>
     <div class="info">
-      20关卡挑战 · 蔚来全系车型怪兽 · 每5关BOSS战<br>
-      ← → 移动 | ↑/空格 跳跃 | X/J 射击 | 踩头消灭<br>
-      收集NIO金币 · 电池加命无敌 · 劲爆电子音乐
+      20&#x5173;&#x5361;&#x6311;&#x6218; &middot; &#x84DA;&#x6765;&#x5168;&#x7CFB;&#x8F66;&#x578B;&#x602A;&#x517D; &middot; &#x6BCF;5&#x5173;BOSS&#x6218;<br>
+      &#x2190; &#x2192; &#x79FB;&#x52A8; &#xFF5C; &#x2191;/&#x7A7A;&#x683C; &#x8DF3;&#x8DC3; &#xFF5C; X/J &#x5C04;&#x51FB; &#xFF5C; &#x8E29;&#x5934;&#x6D88;&#x706D;
     </div>
-    <button class="start-btn" @click.stop="startGame" @touchstart.prevent.stop="startGame">开始征服</button>
+    <button class="start-btn" @click.stop="startGame" @touchstart.prevent.stop="startGame">&#x5F00;&#x59CB;&#x5F81;&#x670D;</button>
     <div class="brand">BLUE SKY COMING</div>
   </div>
 
   <!-- GAME OVER -->
-  <div class="overlay" v-if="state==='gameover'" @click="resetGame" @touchstart.prevent="resetGame">
-    <h1 style="color:#f44;-webkit-text-fill-color:#f44">GAME OVER</h1>
-    <div style="color:#fff;font-size:22px;margin:16px 0">得分: {{score}} · 金币: {{coins}} · 关卡: {{level}}</div>
-    <div style="color:#00bfff;font-size:16px;margin:8px 0">李斌说: 永不放弃! Blue Sky Coming!</div>
-    <button class="start-btn" @click.stop="resetGame" @touchstart.prevent.stop="resetGame">再来一次</button>
+  <div class="overlay go-bg" v-if="state==='gameover'" @click="resetGame" @touchstart.prevent="resetGame">
+    <div class="go-title">GAME OVER</div>
+    <div style="color:#fff;font-size:clamp(16px,3.5vw,22px);margin:16px 0">&#x5F97;&#x5206;: {{score}} &middot; &#x91D1;&#x5E01;: {{coins}} &middot; &#x5173;&#x5361;: {{level}}</div>
+    <div style="color:#00bfff;font-size:clamp(13px,2.5vw,16px);margin:8px 0">&#x674E;&#x658C;&#x8BF4;: &#x6C38;&#x4E0D;&#x653E;&#x5F03;! Blue Sky Coming!</div>
+    <button class="start-btn" @click.stop="resetGame" @touchstart.prevent.stop="resetGame">&#x518D;&#x6765;&#x4E00;&#x6B21;</button>
   </div>
 
   <!-- LEVEL CLEAR -->
-  <div class="overlay" v-if="state==='win'" @click="nextAction" @touchstart.prevent="nextAction">
+  <div class="overlay win-bg" v-if="state==='win'" @click="nextAction" @touchstart.prevent="nextAction">
     <div class="level-clear">
-      <h1 v-if="level>=20" style="font-size:48px">🏆 ALL CLEAR!</h1>
-      <h1 v-else>LEVEL {{level}} CLEAR!</h1>
-      <div style="color:#ffd700;font-size:24px;margin:10px 0" v-if="level>=20">蔚来全系车型已征服!</div>
-      <div style="color:#fff;font-size:20px;margin:12px 0">得分: {{score}} · 金币: {{coins}} · 生命: {{lives}}</div>
-      <div style="color:#0ff;font-size:16px" v-if="level<20">下一关: Level {{level+1}}</div>
-      <button class="start-btn" @click.stop="nextAction" @touchstart.prevent.stop="nextAction">{{level<20?'下一关':'重新开始'}}</button>
+      <div class="win-title" v-if="level>=20">ALL CLEAR!</div>
+      <div class="win-title" v-else>LEVEL {{level}} CLEAR!</div>
+      <div style="color:#ffd700;font-size:clamp(16px,3.5vw,24px);margin:10px 0" v-if="level>=20">&#x84DA;&#x6765;&#x5168;&#x7CFB;&#x8F66;&#x578B;&#x5DF2;&#x5F81;&#x670D;!</div>
+      <div style="color:#fff;font-size:clamp(14px,3vw,20px);margin:12px 0">&#x5F97;&#x5206;: {{score}} &middot; &#x91D1;&#x5E01;: {{coins}} &middot; &#x751F;&#x547D;: {{lives}}</div>
+      <div style="color:#0ff;font-size:clamp(12px,2.5vw,16px)" v-if="level<20">&#x4E0B;&#x4E00;&#x5173;: Level {{level+1}}</div>
+      <button class="start-btn" @click.stop="nextAction" @touchstart.prevent.stop="nextAction">{{level&lt;20?'\u4E0B\u4E00\u5173':'\u91CD\u65B0\u5F00\u59CB'}}</button>
     </div>
   </div>
 
