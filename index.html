@@ -27,26 +27,7 @@ canvas{display:block;image-rendering:pixelated}
 .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 .overlay.go-bg{background:radial-gradient(ellipse at center,rgba(40,0,0,0.95),rgba(0,0,0,0.98))}
 .overlay.win-bg{background:radial-gradient(ellipse at center,rgba(0,20,50,0.92),rgba(0,0,0,0.97))}
-#epicCanvas{position:fixed;inset:0;z-index:19;display:block}
-.epic-ui{position:fixed;inset:0;z-index:21;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.epic-ui>*{pointer-events:auto}
-.e-fade{opacity:0;transition:opacity 1.5s ease}
-.e-fade.vis{opacity:1}
-.e-slow{transition:opacity 2.5s ease}
-.e-top{font-size:clamp(10px,2vw,13px);color:rgba(180,160,120,0.5);letter-spacing:clamp(8px,3vw,22px);text-transform:uppercase;font-weight:300;margin-bottom:6px}
-.e-pre{font-size:clamp(13px,2.8vw,17px);color:rgba(220,190,120,0.8);letter-spacing:clamp(4px,1.5vw,10px);font-weight:400;margin-bottom:10px;text-shadow:0 0 30px rgba(200,160,50,0.3)}
-.e-main{font-size:clamp(38px,9vw,72px);font-weight:900;letter-spacing:clamp(4px,1.5vw,10px);color:transparent;background:linear-gradient(180deg,#ffeaaa 0%,#d4a340 30%,#b8860b 50%,#d4a340 70%,#ffeaaa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(200,150,50,0.6)) drop-shadow(0 4px 8px rgba(0,0,0,0.8));line-height:1.15;text-align:center}
-.e-sub{font-size:clamp(15px,3.5vw,24px);color:rgba(200,180,140,0.7);font-weight:300;letter-spacing:clamp(3px,1.2vw,8px);margin-top:8px;text-shadow:0 0 20px rgba(180,140,60,0.3)}
-.e-nio{font-size:clamp(50px,12vw,100px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(200,170,100,0.12);letter-spacing:clamp(10px,4vw,30px);margin:20px 0 10px;position:relative}
-.e-line{width:clamp(80px,30vw,280px);height:1px;background:linear-gradient(90deg,transparent,rgba(200,170,100,0.35),rgba(255,220,140,0.6),rgba(200,170,100,0.35),transparent);margin:10px 0}
-.e-cars{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:480px;margin:10px 0}
-.e-car{padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);border:1px solid rgba(200,170,100,0.15);letter-spacing:1px}
-.e-info{color:rgba(180,160,130,0.45);font-size:clamp(10px,2vw,12px);text-align:center;line-height:1.8;margin:8px 0}
-.e-btn{margin-top:14px;padding:clamp(12px,2.5vw,18px) clamp(36px,9vw,64px);font-size:clamp(15px,3.2vw,20px);font-weight:700;color:#ffeaaa;background:transparent;border:1px solid rgba(200,170,100,0.35);border-radius:2px;cursor:pointer;letter-spacing:clamp(4px,1.5vw,8px);text-transform:uppercase;transition:all 0.4s;text-shadow:0 0 15px rgba(200,160,80,0.4);position:relative;overflow:hidden}
-.e-btn:hover,.e-btn:active{background:rgba(200,170,100,0.08);border-color:rgba(255,220,140,0.6);box-shadow:0 0 40px rgba(200,160,80,0.2);color:#fff}
-.e-btn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,220,140,0.08),transparent);animation:btnShine 3s ease-in-out infinite}
-@keyframes btnShine{0%{left:-100%}50%{left:100%}100%{left:100%}}
-.e-brand{color:rgba(200,170,100,0.2);font-size:clamp(9px,1.6vw,11px);letter-spacing:clamp(5px,2vw,10px);margin-top:18px;text-transform:uppercase}
+#epicCanvas{position:fixed;inset:0;z-index:19;display:block;cursor:pointer}
 .go-title{font-size:clamp(36px,8vw,60px);font-weight:900;color:#ff2222;text-shadow:0 0 40px rgba(255,0,0,0.5)}
 .win-title{font-size:clamp(32px,7vw,52px);font-weight:900;background:linear-gradient(135deg,#ffd700,#ffaa00,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,200,0,0.5))}
 .start-btn{margin-top:16px;padding:clamp(10px,2vw,16px) clamp(32px,8vw,56px);font-size:clamp(16px,3.5vw,22px);font-weight:bold;color:#fff;background:linear-gradient(135deg,#0044cc,#00aaff);border:none;border-radius:40px;cursor:pointer;letter-spacing:3px;box-shadow:0 0 30px rgba(0,100,255,0.3)}
@@ -54,44 +35,8 @@ canvas{display:block;image-rendering:pixelated}
 </head>
 <body>
 <div id="app" v-cloak>
-  <!-- EPIC CINEMATIC START -->
-  <canvas id="epicCanvas" v-if="state==='start'"></canvas>
-  <div class="epic-ui" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame">
-    <div class="e-fade e-slow" :class="{vis:introStep>=1}">
-      <div class="e-top">NIO &times; MARIO EDITION</div>
-    </div>
-    <div class="e-fade" :class="{vis:introStep>=2}">
-      <div class="e-pre">&#x4E07;&#x4EBF;&#x84DA;&#x6765; CEO</div>
-    </div>
-    <div class="e-fade" :class="{vis:introStep>=3}">
-      <div class="e-main">&#x52C7;&#x95EF;&#x7EB3;&#x65AF;&#x8FBE;&#x514B;</div>
-    </div>
-    <div class="e-fade e-slow" :class="{vis:introStep>=4}">
-      <div class="e-sub">&#x91CD;&#x8FD4;&#x5B87;&#x5B99;&#x7B2C;&#x4E00;&#x8F66;&#x4F01;</div>
-    </div>
-    <div class="e-fade e-slow" :class="{vis:introStep>=5}">
-      <div class="e-line"></div>
-      <div class="e-nio">NIO</div>
-      <div class="e-line"></div>
-    </div>
-    <div class="e-fade e-slow" :class="{vis:introStep>=6}">
-      <div class="e-cars">
-        <div class="e-car" v-for="c in nioModels" :key="c.name" :style="{borderColor:c.color+'66'}">{{c.name}}</div>
-      </div>
-    </div>
-    <div class="e-fade e-slow" :class="{vis:introStep>=7}">
-      <div class="e-info">
-        20&#x5173;&#x53F2;&#x8BD7;&#x5F81;&#x7A0B; &middot; &#x84DA;&#x6765;&#x5168;&#x7CFB;&#x8F66;&#x578B;&#x602A;&#x517D; &middot; &#x6BCF;5&#x5173;BOSS&#x6218;<br>
-        &#x2190; &#x2192; &#x79FB;&#x52A8; &ensp; &#x2191;/&#x7A7A;&#x683C; &#x8DF3;&#x8DC3; &ensp; X/J &#x5C04;&#x51FB; &ensp; &#x8E29;&#x5934;&#x6D88;&#x706D;
-      </div>
-    </div>
-    <div class="e-fade" :class="{vis:introStep>=8}">
-      <button class="e-btn" @click.stop="startGame" @touchstart.prevent.stop="startGame">&#x5F00;&#x59CB;&#x5F81;&#x670D;</button>
-    </div>
-    <div class="e-fade e-slow" :class="{vis:introStep>=8}">
-      <div class="e-brand">Blue Sky Coming</div>
-    </div>
-  </div>
+  <!-- EPIC CINEMATIC START - Full Canvas Rendered -->
+  <canvas id="epicCanvas" v-if="state==='start'" @click="startGame" @touchstart.prevent="startGame"></canvas>
 
   <!-- GAME OVER -->
   <div class="overlay go-bg" v-if="state==='gameover'" @click="resetGame" @touchstart.prevent="resetGame">
@@ -613,113 +558,298 @@ function gameLoop(){frame++;update();drawGame();requestAnimationFrame(gameLoop)}
 
 // ===================== EPIC CINEMATIC INTRO =====================
 let epicCtx,epicParts=[],epicRing=0,epicTime=0,epicAnim;
+let epicStars=[];
+let epicMountains=[];
+
 function startEpicIntro(){
-  introStep.value=0;epicTime=0;epicParts=[];epicRing=0;
+  introStep.value=0;epicTime=0;epicParts=[];epicRing=0;epicStars=[];epicMountains=[];
   nextTick(()=>{
     const ec=document.getElementById('epicCanvas');
     if(!ec)return;
     ec.width=window.innerWidth;ec.height=window.innerHeight;
     epicCtx=ec.getContext('2d');
-    // Spawn golden dust particles
-    for(let i=0;i<120;i++){epicParts.push({x:Math.random()*ec.width,y:Math.random()*ec.height,vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.5-0.1,size:Math.random()*2.5+0.5,alpha:Math.random()*0.6+0.1,life:999})}
+    const w=ec.width,h=ec.height;
+    // Stars
+    for(let i=0;i<300;i++){epicStars.push({x:Math.random()*w,y:Math.random()*h*0.55,size:Math.random()*1.8+0.3,twinkle:Math.random()*Math.PI*2,speed:0.01+Math.random()*0.03})}
+    // Golden embers rising
+    for(let i=0;i<200;i++){epicParts.push({x:Math.random()*w,y:h+Math.random()*h,vx:(Math.random()-0.5)*0.4,vy:-Math.random()*1.2-0.3,size:Math.random()*3+0.5,alpha:Math.random()*0.5+0.15,phase:Math.random()*Math.PI*2})}
+    // Mountain silhouettes
+    for(let layer=0;layer<4;layer++){
+      const pts=[];const seg=8+layer*4;
+      for(let i=0;i<=seg;i++){
+        const x=i/seg*w;
+        const baseH=h*(0.35+layer*0.08);
+        const variation=Math.sin(i*0.8+layer*2)*h*0.06+Math.sin(i*1.7+layer)*h*0.04;
+        pts.push({x,y:baseH+variation+(Math.random()-0.5)*h*0.02});
+      }
+      epicMountains.push({pts,depth:layer});
+    }
     if(!epicAnim)epicAnimLoop();
   });
-  // Timed text reveals - cinematic pacing
-  setTimeout(()=>{introStep.value=1},600);
-  setTimeout(()=>{introStep.value=2},1800);
-  setTimeout(()=>{introStep.value=3},3200);
-  setTimeout(()=>{introStep.value=4},4800);
-  setTimeout(()=>{introStep.value=5},6200);
-  setTimeout(()=>{introStep.value=6},7500);
-  setTimeout(()=>{introStep.value=7},8500);
-  setTimeout(()=>{introStep.value=8},9500);
+  // Cinematic timing - slow, majestic
+  setTimeout(()=>{introStep.value=1},1200);   // dim light
+  setTimeout(()=>{introStep.value=2},3000);   // first text
+  setTimeout(()=>{introStep.value=3},5500);   // main title
+  setTimeout(()=>{introStep.value=4},8000);   // subtitle
+  setTimeout(()=>{introStep.value=5},10500);  // ring ignites
+  setTimeout(()=>{introStep.value=6},12500);  // button
 }
 
 function epicAnimLoop(){
   epicAnim=true;
   const ec=document.getElementById('epicCanvas');
   if(!ec||!epicCtx||state.value!=='start'){epicAnim=false;return}
-  const w=ec.width,h=ec.height;
+  const c=epicCtx,w=ec.width,h=ec.height;
   epicTime++;
-  // Dark background with subtle vignette
-  epicCtx.fillStyle='rgba(5,3,8,0.06)';epicCtx.fillRect(0,0,w,h);
-  if(epicTime<3){epicCtx.fillStyle='#050308';epicCtx.fillRect(0,0,w,h)}
+  const t=epicTime;
+  const step=introStep.value;
 
-  // Central golden ring of power
-  epicRing+=(introStep.value>=3?0.008:0.003);
-  const cx=w/2,cy=h*0.44;
-  const ringR=Math.min(w,h)*0.22+Math.sin(epicTime*0.015)*8;
-  // Outer ethereal glow
-  const grd=epicCtx.createRadialGradient(cx,cy,ringR*0.5,cx,cy,ringR*1.8);
-  grd.addColorStop(0,'rgba(180,140,60,0)');
-  grd.addColorStop(0.5,`rgba(180,140,60,${0.015+Math.sin(epicTime*0.02)*0.008})`);
-  grd.addColorStop(1,'rgba(180,140,60,0)');
-  epicCtx.fillStyle=grd;epicCtx.fillRect(0,0,w,h);
-  // Ring
-  epicCtx.save();epicCtx.translate(cx,cy);epicCtx.rotate(epicRing);
-  for(let i=0;i<2;i++){
-    const r=ringR+i*8;
-    epicCtx.strokeStyle=`rgba(200,170,90,${0.06+Math.sin(epicTime*0.025+i)*0.03})`;
-    epicCtx.lineWidth=1+i*0.5;
-    epicCtx.beginPath();epicCtx.arc(0,0,r,0,Math.PI*2);epicCtx.stroke();
-  }
-  // Runes / glyphs on ring
-  const glyphs='\u2726\u2727\u2728\u2729\u272A\u2730\u2731\u2732\u2733\u2734\u2735\u2736';
-  epicCtx.font='12px serif';epicCtx.textAlign='center';
-  for(let i=0;i<12;i++){
-    const a=Math.PI*2*i/12;
-    const gx=Math.cos(a)*ringR,gy=Math.sin(a)*ringR;
-    epicCtx.fillStyle=`rgba(200,180,110,${0.15+Math.sin(epicTime*0.03+i)*0.1})`;
-    epicCtx.fillText(glyphs[i],gx,gy+4);
-  }
-  epicCtx.restore();
+  // === BLACK VOID BASE ===
+  c.fillStyle='#020104';c.fillRect(0,0,w,h);
 
-  // Light beams from center (appear at step 3)
-  if(introStep.value>=3){
-    for(let i=0;i<6;i++){
-      const a=epicTime*0.005+Math.PI*2*i/6;
-      const len=Math.min(w,h)*0.6;
-      const grd2=epicCtx.createLinearGradient(cx,cy,cx+Math.cos(a)*len,cy+Math.sin(a)*len);
-      grd2.addColorStop(0,`rgba(200,170,100,${0.02+Math.sin(epicTime*0.01+i)*0.01})`);
-      grd2.addColorStop(1,'rgba(200,170,100,0)');
-      epicCtx.strokeStyle=grd2;epicCtx.lineWidth=2+Math.sin(epicTime*0.02+i)*1;
-      epicCtx.beginPath();epicCtx.moveTo(cx,cy);epicCtx.lineTo(cx+Math.cos(a)*len,cy+Math.sin(a)*len);epicCtx.stroke();
-    }
+  // === STAR FIELD ===
+  const starAlpha=Math.min(1,t/180);
+  for(const s of epicStars){
+    s.twinkle+=s.speed;
+    const bright=0.3+Math.sin(s.twinkle)*0.4;
+    const a=starAlpha*bright*0.8;
+    c.fillStyle=`rgba(220,210,180,${a})`;
+    c.fillRect(s.x,s.y,s.size,s.size);
   }
 
-  // Golden dust particles
-  for(const p of epicParts){
-    p.x+=p.vx+Math.sin(epicTime*0.01+p.y*0.01)*0.15;
-    p.y+=p.vy;
-    if(p.y<-10){p.y=h+10;p.x=Math.random()*w}
-    if(p.x<0)p.x=w;if(p.x>w)p.x=0;
-    const flicker=0.5+Math.sin(epicTime*0.05+p.x*0.1)*0.5;
-    epicCtx.fillStyle=`rgba(220,190,120,${p.alpha*flicker})`;
-    epicCtx.fillRect(p.x,p.y,p.size,p.size);
-    // Occasional bright sparkle
-    if(Math.random()<0.002){epicCtx.fillStyle='rgba(255,240,200,0.8)';epicCtx.fillRect(p.x-1,p.y-1,p.size+2,p.size+2)}
-  }
-
-  // Vertical light pillars (step 5+)
-  if(introStep.value>=5){
+  // === AURORA / NORTHERN LIGHTS ===
+  if(step>=1){
+    const auroraA=Math.min(0.06,(t-70)/600*0.06);
     for(let i=0;i<3;i++){
-      const px=cx+(i-1)*w*0.25;
-      const grd3=epicCtx.createLinearGradient(px,0,px,h);
-      grd3.addColorStop(0,'rgba(200,170,100,0)');
-      grd3.addColorStop(0.3,`rgba(200,170,100,${0.01+Math.sin(epicTime*0.008+i*2)*0.008})`);
-      grd3.addColorStop(0.7,`rgba(200,170,100,${0.01+Math.sin(epicTime*0.008+i*2)*0.008})`);
-      grd3.addColorStop(1,'rgba(200,170,100,0)');
-      epicCtx.fillStyle=grd3;epicCtx.fillRect(px-15,0,30,h);
+      const ay=h*0.15+Math.sin(t*0.003+i*2)*h*0.08;
+      const grd=c.createLinearGradient(0,ay-h*0.1,0,ay+h*0.1);
+      const hue=(t*0.3+i*40)%360;
+      grd.addColorStop(0,`hsla(${hue},50%,40%,0)`);
+      grd.addColorStop(0.5,`hsla(${hue},60%,50%,${auroraA})`);
+      grd.addColorStop(1,`hsla(${hue},50%,40%,0)`);
+      c.fillStyle=grd;c.fillRect(0,ay-h*0.15,w,h*0.3);
     }
   }
 
-  // Subtle fog at bottom
-  const fogGrd=epicCtx.createLinearGradient(0,h*0.75,0,h);
-  fogGrd.addColorStop(0,'rgba(5,3,8,0)');
-  fogGrd.addColorStop(1,`rgba(15,10,5,${0.15+Math.sin(epicTime*0.01)*0.05})`);
-  epicCtx.fillStyle=fogGrd;epicCtx.fillRect(0,h*0.75,w,h*0.25);
+  // === MOUNTAINS (dark silhouettes, layered) ===
+  for(const m of epicMountains){
+    const d=m.depth;
+    const brightness=4+d*3;
+    const fogA=0.02+d*0.015;
+    c.fillStyle=`rgb(${brightness},${brightness-1},${brightness+2})`;
+    c.beginPath();c.moveTo(0,h);
+    for(const p of m.pts)c.lineTo(p.x,p.y+Math.sin(t*0.002+d)*2);
+    c.lineTo(w,h);c.closePath();c.fill();
+    // Mountain fog
+    if(d>=2){
+      const fg=c.createLinearGradient(0,m.pts[0].y,0,m.pts[0].y+h*0.08);
+      fg.addColorStop(0,`rgba(${20+d*5},${15+d*3},${10+d*2},${fogA})`);
+      fg.addColorStop(1,'rgba(0,0,0,0)');
+      c.fillStyle=fg;c.fillRect(0,m.pts[0].y-10,w,h*0.08);
+    }
+  }
+
+  // === GROUND FOG ===
+  for(let i=0;i<5;i++){
+    const fy=h*0.75+i*h*0.05+Math.sin(t*0.005+i*1.5)*8;
+    const fa=0.03+Math.sin(t*0.008+i)*0.015;
+    const fg=c.createLinearGradient(0,fy-20,0,fy+30);
+    fg.addColorStop(0,'rgba(30,25,20,0)');
+    fg.addColorStop(0.5,`rgba(40,30,20,${fa})`);
+    fg.addColorStop(1,'rgba(30,25,20,0)');
+    c.fillStyle=fg;c.fillRect(0,fy-20,w,50);
+  }
+
+  // === GOLDEN RING OF POWER (central) ===
+  const cx=w/2,cy=h*0.42;
+  epicRing+=step>=5?0.006:0.002;
+  const ringGrow=step>=5?Math.min(1,(t-introStepTime(5))/120):0;
+  const ringBase=Math.min(w,h)*0.18;
+  const ringR=ringBase+ringGrow*ringBase*0.3+Math.sin(t*0.012)*5;
+
+  // Ring outer glow
+  if(step>=1){
+    const glowA=Math.min(0.04,step>=5?0.04:0.015);
+    const grd=c.createRadialGradient(cx,cy,ringR*0.3,cx,cy,ringR*2.5);
+    grd.addColorStop(0,`rgba(200,160,60,${glowA})`);
+    grd.addColorStop(0.5,`rgba(180,140,40,${glowA*0.5})`);
+    grd.addColorStop(1,'rgba(180,140,40,0)');
+    c.fillStyle=grd;c.fillRect(0,0,w,h);
+  }
+
+  // Ring bands
+  c.save();c.translate(cx,cy);c.rotate(epicRing);
+  for(let i=0;i<3;i++){
+    const r=ringR+i*6-6;
+    const a=step>=5?(0.12-i*0.03):(0.04-i*0.01);
+    c.strokeStyle=`rgba(210,180,100,${a+Math.sin(t*0.02+i)*a*0.3})`;
+    c.lineWidth=2-i*0.5;
+    c.beginPath();c.arc(0,0,r,0,Math.PI*2);c.stroke();
+  }
+  // Runes on ring
+  if(step>=5){
+    const glyphs='\u16A0\u16A2\u16A6\u16A8\u16B1\u16B7\u16C1\u16C7\u16D2\u16D6\u16DA\u16DE\u16E3\u16EB\u16F0\u16F8';
+    c.font=`${Math.max(10,ringR*0.12)}px serif`;c.textAlign='center';c.textBaseline='middle';
+    for(let i=0;i<16;i++){
+      const a=Math.PI*2*i/16;
+      const gx=Math.cos(a)*(ringR+1),gy=Math.sin(a)*(ringR+1);
+      c.fillStyle=`rgba(255,220,140,${0.2+Math.sin(t*0.04+i*0.5)*0.15})`;
+      c.fillText(glyphs[i%glyphs.length],gx,gy);
+    }
+  }
+  c.restore();
+
+  // === FIRE EMBERS / GOLDEN PARTICLES RISING ===
+  for(const p of epicParts){
+    p.x+=p.vx+Math.sin(t*0.008+p.phase)*0.3;
+    p.y+=p.vy;
+    if(p.y<-20){p.y=h+20;p.x=Math.random()*w;p.phase=Math.random()*Math.PI*2}
+    const flicker=0.4+Math.sin(t*0.06+p.phase)*0.4;
+    const a=p.alpha*flicker*Math.min(1,t/120);
+    // Warm ember color
+    const heat=Math.random();
+    if(heat>0.9){c.fillStyle=`rgba(255,200,80,${a*1.5})`;c.fillRect(p.x-1,p.y-1,p.size+2,p.size+2)}
+    else{c.fillStyle=`rgba(${200+Math.floor(heat*55)},${150+Math.floor(heat*40)},${60+Math.floor(heat*30)},${a})`;c.fillRect(p.x,p.y,p.size,p.size)}
+  }
+
+  // === LIGHT RAYS (from behind mountains at step 3+) ===
+  if(step>=3){
+    const rayA=Math.min(0.03,(t-introStepTime(3))/200*0.03);
+    for(let i=0;i<8;i++){
+      const angle=-Math.PI/2+Math.sin(t*0.002+i*0.7)*(Math.PI*0.4)+(i-4)*0.12;
+      const len=Math.max(w,h)*0.9;
+      const rayW=8+Math.sin(t*0.015+i*1.3)*4;
+      c.save();c.translate(cx,h*0.5);c.rotate(angle);
+      const rg=c.createLinearGradient(0,0,0,-len);
+      rg.addColorStop(0,`rgba(220,180,100,${rayA})`);
+      rg.addColorStop(0.3,`rgba(200,160,80,${rayA*0.6})`);
+      rg.addColorStop(1,'rgba(200,160,80,0)');
+      c.fillStyle=rg;c.fillRect(-rayW/2,0,rayW,-len);
+      c.restore();
+    }
+  }
+
+  // === LENS FLARE at ring center (step 5+) ===
+  if(step>=5){
+    const flareA=Math.min(0.5,(t-introStepTime(5))/60*0.5);
+    const fg=c.createRadialGradient(cx,cy,0,cx,cy,ringR*0.4);
+    fg.addColorStop(0,`rgba(255,240,200,${flareA*0.3})`);
+    fg.addColorStop(0.5,`rgba(255,220,140,${flareA*0.1})`);
+    fg.addColorStop(1,'rgba(255,220,140,0)');
+    c.fillStyle=fg;c.fillRect(cx-ringR*0.5,cy-ringR*0.5,ringR,ringR);
+    // Horizontal lens streak
+    c.fillStyle=`rgba(255,230,160,${flareA*0.08})`;
+    c.fillRect(0,cy-1,w,3);
+  }
+
+  // === VIGNETTE ===
+  const vig=c.createRadialGradient(cx,cy,Math.min(w,h)*0.25,cx,cy,Math.max(w,h)*0.75);
+  vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,0.7)');
+  c.fillStyle=vig;c.fillRect(0,0,w,h);
+
+  // ============ TEXT RENDERING ============
+  c.textAlign='center';c.textBaseline='middle';
+
+  // Step 2: "蔚来李斌" - appears like ancient scripture
+  if(step>=2){
+    const ta=Math.min(1,(t-introStepTime(2))/90);
+    const fs1=Math.min(w*0.045,22);
+    c.save();
+    c.shadowColor='rgba(200,160,80,0.6)';c.shadowBlur=30;
+    c.fillStyle=`rgba(200,180,130,${ta*0.7})`;
+    c.font=`300 ${fs1}px "Georgia","Times New Roman",serif`;
+    c.fillText('\u84DA\u6765\u674E\u658C',cx,cy-ringR*1.2-30);
+    c.shadowBlur=0;
+    // Decorative lines
+    const lineW=Math.min(200,w*0.25)*ta;
+    c.strokeStyle=`rgba(200,170,100,${ta*0.25})`;c.lineWidth=0.5;
+    c.beginPath();c.moveTo(cx-lineW,cy-ringR*1.2-12);c.lineTo(cx+lineW,cy-ringR*1.2-12);c.stroke();
+    c.restore();
+  }
+
+  // Step 3: Main title "勇闯纳斯达克"
+  if(step>=3){
+    const ta=Math.min(1,(t-introStepTime(3))/100);
+    const fs2=Math.min(w*0.09,68);
+    c.save();
+    c.shadowColor='rgba(255,200,80,0.8)';c.shadowBlur=50*ta;
+    // Gold metallic gradient text
+    const tg=c.createLinearGradient(cx-200,cy-20,cx+200,cy+20);
+    tg.addColorStop(0,'#ffeebb');tg.addColorStop(0.25,'#d4a340');tg.addColorStop(0.5,'#ffd780');tg.addColorStop(0.75,'#b8860b');tg.addColorStop(1,'#ffeebb');
+    c.fillStyle=tg;c.globalAlpha=ta;
+    c.font=`900 ${fs2}px "Georgia","STSong","SimSun",serif`;
+    c.fillText('\u52C7\u95EF\u7EB3\u65AF\u8FBE\u514B',cx,cy);
+    c.globalAlpha=1;c.shadowBlur=0;
+    c.restore();
+  }
+
+  // Step 4: Subtitle "宇宙第一车企 · 王者归来"
+  if(step>=4){
+    const ta=Math.min(1,(t-introStepTime(4))/100);
+    const fs3=Math.min(w*0.04,26);
+    c.save();
+    c.shadowColor='rgba(180,140,60,0.5)';c.shadowBlur=20*ta;
+    c.fillStyle=`rgba(210,190,150,${ta*0.75})`;
+    c.font=`300 ${fs3}px "Georgia","Times New Roman",serif`;
+    c.letterSpacing='4px';
+    c.fillText('\u5B87\u5B99\u7B2C\u4E00\u8F66\u4F01 \u00B7 \u738B\u8005\u5F52\u6765',cx,cy+ringR*1.1+20);
+    c.shadowBlur=0;
+    // Bottom decorative line
+    const lineW2=Math.min(280,w*0.35)*ta;
+    c.strokeStyle=`rgba(200,170,100,${ta*0.2})`;c.lineWidth=0.5;
+    c.beginPath();c.moveTo(cx-lineW2,cy+ringR*1.1+40);c.lineTo(cx+lineW2,cy+ringR*1.1+40);c.stroke();
+    c.restore();
+  }
+
+  // Step 5: NIO watermark in ring
+  if(step>=5){
+    const ta=Math.min(1,(t-introStepTime(5))/120);
+    const fs4=Math.min(ringR*0.6,50);
+    c.save();c.globalAlpha=ta*0.12;
+    c.fillStyle='#d4a340';
+    c.font=`900 ${fs4}px Arial`;
+    c.fillText('NIO',cx,cy+fs4*0.1);
+    c.globalAlpha=1;c.restore();
+  }
+
+  // Step 6: "开始征服" button area
+  if(step>=6){
+    const ta=Math.min(1,(t-introStepTime(6))/80);
+    const btnY=h*0.85;
+    const fs5=Math.min(w*0.025,18);
+    // Button border
+    const bw=Math.min(240,w*0.35),bh=48;
+    c.save();c.globalAlpha=ta;
+    c.strokeStyle=`rgba(200,170,100,${0.3+Math.sin(t*0.03)*0.1})`;c.lineWidth=1;
+    c.strokeRect(cx-bw/2,btnY-bh/2,bw,bh);
+    // Shimmer
+    const shimX=((t*2)%(bw+100))-50;
+    c.fillStyle='rgba(255,220,140,0.05)';c.fillRect(cx-bw/2+shimX,btnY-bh/2,50,bh);
+    // Text
+    c.shadowColor='rgba(200,160,80,0.5)';c.shadowBlur=15;
+    c.fillStyle=`rgba(230,210,170,${0.8+Math.sin(t*0.04)*0.15})`;
+    c.font=`700 ${fs5}px "Georgia",serif`;
+    c.fillText('\u5F00\u59CB\u5F81\u670D',cx,btnY+1);
+    c.shadowBlur=0;
+    // "Blue Sky Coming" at very bottom
+    c.fillStyle=`rgba(150,130,100,${ta*0.2})`;
+    c.font=`300 ${Math.min(11,w*0.015)}px Arial`;
+    c.letterSpacing='6px';
+    c.fillText('BLUE SKY COMING',cx,h*0.95);
+    c.globalAlpha=1;c.restore();
+  }
+
+  // === TOP BORDER DECORATION ===
+  c.strokeStyle='rgba(200,170,100,0.06)';c.lineWidth=0.5;
+  c.beginPath();c.moveTo(w*0.2,20);c.lineTo(w*0.8,20);c.stroke();
+  c.beginPath();c.moveTo(w*0.25,h-20);c.lineTo(w*0.75,h-20);c.stroke();
 
   requestAnimationFrame(epicAnimLoop);
+}
+
+function introStepTime(s){
+  const times=[0,70,180,330,480,630,750];
+  return (times[s]||0);
 }
 
 // Epic orchestral intro music
