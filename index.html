@@ -116,6 +116,8 @@ const BW=960,BH=640,TL=40,GRAV=0.5,JF=-16,MS=6,BS=10;
 let ctx,frame=0,camX=0;
 let tiles=[],ents=[],bulls=[],parts=[],ftxts=[],coinI=[],mushI=[];
 let shakeX=0,shakeY=0,shakeDur=0;
+// Hellscape background systems
+let meteors=[],bgStars=[],lightnings=[],tsunamiWaves=[],volcanoes=[],embers=[];
 let player={x:80,y:0,w:32,h:40,vx:0,vy:0,og:false,f:1,sc:0,af:0,at:0,inv:0,dead:false,big:0,fast:0,multi:0,shield:0,magnet:0};
 const keys={},ts={l:false,r:false,j:false,s:false};
 
@@ -192,6 +194,9 @@ function genLevel(n){
 
 function loadLvl(n){
   tiles=[];ents=[];bulls=[];parts=[];ftxts=[];coinI=[];mushI=[];camX=0;
+  meteors=[];lightnings=[];tsunamiWaves=[];embers=[];
+  bgStars=[];for(let i=0;i<100;i++)bgStars.push({x:Math.random()*3000,y:Math.random()*BH*0.5,s:Math.random()*2+0.3,tw:Math.random()*6.28,sp:0.01+Math.random()*0.03});
+  volcanoes=[{x:BW*0.8,h:120},{x:BW*1.8,h:100},{x:BW*2.6,h:140}];
   const{m,rows,cols}=genLevel(n);
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const ch=m[r][c],x=c*TL,y=r*TL;
@@ -302,6 +307,23 @@ function update(){
   const ct=player.x-BW/3;if(ct>camX)camX=ct;if(camX<0)camX=0;
   if(player.y>BH+100)pDie();
 
+  // === HELLSCAPE SYSTEMS UPDATE ===
+  // Meteors
+  if(Math.random()<0.025+level.value*0.005){
+    meteors.push({x:camX+BW+Math.random()*200,y:-30-Math.random()*80,vx:-4-Math.random()*6,vy:3+Math.random()*5,size:5+Math.random()*20,life:90+Math.random()*40});
+  }
+  for(let i=meteors.length-1;i>=0;i--){const m=meteors[i];m.x+=m.vx;m.y+=m.vy;m.life--;
+    if(m.life<=0||m.y>BH){if(m.size>10){for(let j=0;j<15;j++){const a=Math.PI*2*j/15,sp=2+Math.random()*5;parts.push({x:m.x,y:Math.min(m.y,BH-40),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,life:25+Math.random()*15,color:['#f80','#ff0','#f44','#ffa'][j%4],size:3+Math.random()*5})}shake(4,3)}meteors.splice(i,1)}}
+  // Embers rising from ground
+  if(Math.random()<0.1){embers.push({x:camX+Math.random()*BW,y:BH-20,vx:(Math.random()-0.5)*0.5,vy:-1-Math.random()*2,life:60+Math.random()*40,size:1+Math.random()*2})}
+  for(let i=embers.length-1;i>=0;i--){const e=embers[i];e.x+=e.vx+Math.sin(frame*0.02+e.y*0.05)*0.3;e.y+=e.vy;e.life--;if(e.life<=0)embers.splice(i,1)}
+  // Lightning
+  if(Math.random()<0.004+level.value*0.001){const lx=camX+Math.random()*BW;const segs=[];let sx=lx,sy=0;for(let s=0;s<10;s++){sx+=(Math.random()-0.5)*50;sy+=BH*0.08+Math.random()*BH*0.04;segs.push({x:sx,y:Math.min(sy,BH-60)})}lightnings.push({x:lx,y:0,segs,life:8+Math.random()*5})}
+  for(let i=lightnings.length-1;i>=0;i--){lightnings[i].life--;if(lightnings[i].life<=0)lightnings.splice(i,1)}
+  // Tsunami waves
+  if(Math.random()<0.002+level.value*0.0005){tsunamiWaves.push({x:camX+BW+100,speed:1.5+Math.random()*2,height:30+Math.random()*40,life:200+Math.random()*100})}
+  for(let i=tsunamiWaves.length-1;i>=0;i--){const w=tsunamiWaves[i];w.x-=w.speed;w.life--;if(w.life<=0||w.x<camX-200)tsunamiWaves.splice(i,1)}
+
   // Bullets
   for(let i=bulls.length-1;i>=0;i--){
     const b=bulls[i];b.x+=b.vx;b.y+=b.vy;b.life--;
@@ -386,21 +408,154 @@ function sparkAt(x,y){for(let i=0;i<5;i++)parts.push({x,y,vx:(Math.random()-0.5)
 // ===================== DRAW =====================
 function drawGame(){
   if(!ctx)return;
-  // Sky
-  const hue=(level.value*20)%360;
-  const g=ctx.createLinearGradient(0,0,0,BH);
-  g.addColorStop(0,`hsl(${hue},50%,12%)`);g.addColorStop(0.5,`hsl(${(hue+15)%360},60%,25%)`);g.addColorStop(1,`hsl(${(hue+30)%360},40%,45%)`);
-  ctx.fillStyle=g;ctx.fillRect(0,0,BW,BH);
+  const c=ctx;
+  // === HELLSCAPE SKY ===
+  const hue=(level.value*18+frame*0.03)%360;
+  const skyG=c.createLinearGradient(0,0,0,BH);
+  skyG.addColorStop(0,`hsl(${hue},35%,5%)`);
+  skyG.addColorStop(0.2,`hsl(${(hue+8)%360},50%,10%)`);
+  skyG.addColorStop(0.45,`hsl(${(hue+15)%360},55%,18%)`);
+  skyG.addColorStop(0.7,`hsl(${(hue+25)%360},50%,25%)`);
+  skyG.addColorStop(0.85,`hsl(${(hue+35)%360},60%,15%)`);
+  skyG.addColorStop(1,`hsl(${(hue+10)%360},40%,8%)`);
+  c.fillStyle=skyG;c.fillRect(0,0,BW,BH);
 
-  // BG clouds
-  ctx.fillStyle='rgba(255,255,255,0.25)';
-  for(let i=0;i<7;i++){const cx=((i*180-camX*0.15)%(BW+300))-40,cy=25+i*22%90;ctx.beginPath();ctx.arc(cx,cy,22,0,Math.PI*2);ctx.arc(cx+28,cy-8,18,0,Math.PI*2);ctx.arc(cx+48,cy,20,0,Math.PI*2);ctx.fill()}
-  // NIO watermark
-  ctx.fillStyle='rgba(0,191,255,0.03)';ctx.font='bold 140px Arial';ctx.textAlign='center';
-  ctx.fillText('NIO',BW/2+(Math.sin(frame*0.005)*20),BH/2);
+  // === STARS ===
+  for(const s of bgStars){s.tw+=s.sp;
+    const sx=((s.x-camX*0.05)%BW+BW)%BW,sy=s.y;
+    const br=0.3+Math.sin(s.tw)*0.5;
+    c.fillStyle=`rgba(255,245,200,${br*0.6})`;c.fillRect(sx,sy,s.s,s.s);
+  }
 
-  ctx.save();
-  ctx.translate(-camX+shakeX,shakeY);
+  // === RED NEBULA / HELLFIRE SKY ===
+  for(let i=0;i<4;i++){
+    const ny=BH*0.15+Math.sin(frame*0.002+i*1.7)*BH*0.1;
+    const nx=BW*0.5+Math.sin(frame*0.003+i*2.3)*BW*0.25;
+    const nG=c.createRadialGradient(nx,ny,0,nx,ny,BW*0.35);
+    const nh=(hue+i*50+frame*0.08)%360;
+    nG.addColorStop(0,`hsla(${nh},70%,35%,${0.04+Math.sin(frame*0.01+i)*0.02})`);
+    nG.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=nG;c.fillRect(0,0,BW,BH);
+  }
+
+  // === DISTANT VOLCANOES (parallax background) ===
+  for(const v of volcanoes){
+    const vx=((v.x-camX*0.08)%(BW*2)+BW*2)%(BW*2)-BW*0.3;
+    const vy=BH*0.55;
+    // Mountain shape
+    c.fillStyle='rgba(20,8,5,0.7)';
+    c.beginPath();c.moveTo(vx-80,BH);c.lineTo(vx-20,vy);c.lineTo(vx,vy-v.h);c.lineTo(vx+20,vy);c.lineTo(vx+80,BH);c.fill();
+    // Crater glow
+    const crG=c.createRadialGradient(vx,vy-v.h,0,vx,vy-v.h,40+Math.sin(frame*0.03)*10);
+    crG.addColorStop(0,`rgba(255,100,0,${0.3+Math.sin(frame*0.05)*0.15})`);
+    crG.addColorStop(0.5,`rgba(255,40,0,${0.12+Math.sin(frame*0.04)*0.06})`);
+    crG.addColorStop(1,'rgba(255,0,0,0)');
+    c.fillStyle=crG;c.fillRect(vx-60,vy-v.h-50,120,100);
+    // Smoke
+    c.fillStyle=`rgba(60,40,30,${0.15+Math.sin(frame*0.02)*0.05})`;
+    for(let s=0;s<3;s++){const sx=vx+Math.sin(frame*0.01+s*2)*15,sy=vy-v.h-20-s*25-Math.sin(frame*0.015+s)*10;
+      c.beginPath();c.arc(sx,sy,12+s*8+Math.sin(frame*0.02+s)*5,0,Math.PI*2);c.fill()}
+  }
+
+  // === PARALLAX MOUNTAINS (ruined landscape) ===
+  for(let layer=0;layer<3;layer++){
+    const p=0.04+layer*0.035;
+    const baseY=BH*0.5+layer*BH*0.1;
+    const col=`rgba(${12+layer*6},${5+layer*3},${8+layer*4},${0.5+layer*0.15})`;
+    c.fillStyle=col;c.beginPath();c.moveTo(0,BH);
+    for(let x=0;x<=BW;x+=15){
+      const wx=(x+camX*p)/120;
+      const my=baseY+Math.sin(wx)*30+Math.sin(wx*2.5+layer)*15+Math.sin(wx*0.4+layer*3)*20;
+      c.lineTo(x,my);
+    }
+    c.lineTo(BW,BH);c.fill();
+  }
+
+  // === SMOKE/ASH CLOUDS ===
+  c.fillStyle='rgba(80,50,30,0.08)';
+  for(let i=0;i<6;i++){
+    const cx2=((i*200+frame*0.3-camX*0.12)%(BW+250))-60;
+    const cy2=BH*0.2+Math.sin(frame*0.004+i*1.3)*30+i*15;
+    c.beginPath();c.arc(cx2,cy2,30+i*5,0,Math.PI*2);c.arc(cx2+35,cy2-10,25+i*3,0,Math.PI*2);c.arc(cx2+60,cy2+5,28+i*4,0,Math.PI*2);c.fill();
+  }
+
+  // === METEORS (screen space, behind game world) ===
+  for(const m of meteors){
+    const sx=m.x-camX,sy=m.y;if(sx<-50||sx>BW+50)continue;
+    c.save();c.globalAlpha=Math.min(1,m.life/20);
+    // Fire trail
+    const tLen=m.size*2.5;
+    const tG=c.createLinearGradient(sx,sy,sx-m.vx*tLen*0.2,sy-m.vy*tLen*0.2);
+    tG.addColorStop(0,'rgba(255,180,50,0.8)');tG.addColorStop(0.5,'rgba(255,80,0,0.4)');tG.addColorStop(1,'rgba(255,30,0,0)');
+    c.strokeStyle=tG;c.lineWidth=m.size*0.5;c.beginPath();c.moveTo(sx,sy);c.lineTo(sx-m.vx*tLen*0.25,sy-m.vy*tLen*0.25);c.stroke();
+    // Glow
+    c.shadowColor='#f80';c.shadowBlur=m.size*2;
+    c.fillStyle=`rgba(255,200,80,0.9)`;c.beginPath();c.arc(sx,sy,m.size*0.35,0,Math.PI*2);c.fill();
+    c.fillStyle='rgba(255,255,220,0.8)';c.beginPath();c.arc(sx,sy,m.size*0.15,0,Math.PI*2);c.fill();
+    c.shadowBlur=0;
+    // Sparks
+    for(let j=0;j<3;j++){const sa=Math.random()*6.28,sd=Math.random()*m.size*0.8;
+      c.fillStyle=`rgba(255,${150+Math.floor(Math.random()*100)},50,${0.3+Math.random()*0.4})`;
+      c.fillRect(sx+Math.cos(sa)*sd,sy+Math.sin(sa)*sd,1.5,1.5)}
+    c.restore();
+  }
+
+  // === LIGHTNING ===
+  for(const l of lightnings){
+    c.save();c.globalAlpha=l.life/12;
+    c.strokeStyle=`rgba(200,220,255,${0.6+Math.random()*0.3})`;c.lineWidth=2+Math.random()*3;
+    c.shadowColor='#ccf';c.shadowBlur=25;
+    c.beginPath();c.moveTo(l.x-camX,0);
+    for(const s of l.segs)c.lineTo(s.x-camX,s.y);c.stroke();
+    // Branch
+    if(l.segs.length>3){c.lineWidth=1;c.beginPath();c.moveTo(l.segs[3].x-camX,l.segs[3].y);
+      c.lineTo(l.segs[3].x-camX+30+Math.random()*20,l.segs[3].y+40+Math.random()*30);c.stroke()}
+    c.shadowBlur=0;c.restore();
+    // Flash
+    if(l.life>6){c.fillStyle=`rgba(220,230,255,${(l.life-6)*0.03})`;c.fillRect(0,0,BW,BH)}
+  }
+
+  // === RISING EMBERS ===
+  for(const e of embers){
+    const ex=e.x-camX;if(ex<-10||ex>BW+10)continue;
+    const a=e.life/100;
+    c.fillStyle=`rgba(255,${100+Math.floor(Math.random()*80)},30,${a*0.6})`;
+    c.fillRect(ex,e.y,e.size,e.size);
+  }
+
+  // === TSUNAMI WAVES (behind game tiles) ===
+  for(const w of tsunamiWaves){
+    const wx=w.x-camX;if(wx<-200||wx>BW+200)continue;
+    c.save();c.globalAlpha=Math.min(1,w.life/40)*0.35;
+    const waveY=BH*0.75;
+    c.fillStyle='rgba(0,80,160,0.4)';
+    c.beginPath();c.moveTo(wx-100,BH);
+    for(let x=-100;x<=100;x+=5){const wy=waveY-w.height*Math.exp(-(x*x)/(2000))*Math.cos(x*0.05+frame*0.08);c.lineTo(wx+x,wy)}
+    c.lineTo(wx+100,BH);c.fill();
+    // Foam
+    c.fillStyle='rgba(200,230,255,0.2)';
+    for(let x=-80;x<=80;x+=12){const fy=waveY-w.height*Math.exp(-(x*x)/1800)*Math.cos(x*0.05+frame*0.08)-3;
+      c.beginPath();c.arc(wx+x+Math.sin(frame*0.1+x)*3,fy,3+Math.random()*2,0,Math.PI*2);c.fill()}
+    c.restore();
+  }
+
+  // === HEAT HAZE at ground level ===
+  const hazeA=0.03+Math.sin(frame*0.02)*0.01;
+  const hazeG=c.createLinearGradient(0,BH*0.75,0,BH);
+  hazeG.addColorStop(0,'rgba(255,60,0,0)');hazeG.addColorStop(0.5,`rgba(255,80,20,${hazeA})`);hazeG.addColorStop(1,`rgba(180,30,0,${hazeA*1.5})`);
+  c.fillStyle=hazeG;c.fillRect(0,BH*0.75,BW,BH*0.25);
+
+  // === NIO watermark ===
+  c.fillStyle='rgba(0,191,255,0.02)';c.font=`bold ${Math.min(140,BW*0.15)}px Arial`;c.textAlign='center';
+  c.fillText('NIO',BW/2+Math.sin(frame*0.005)*15,BH*0.45);
+
+  // === VIGNETTE ===
+  const vig=c.createRadialGradient(BW/2,BH/2,BW*0.2,BW/2,BH/2,BW*0.7);
+  vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,0.35)');
+  c.fillStyle=vig;c.fillRect(0,0,BW,BH);
+
+  c.save();
+  c.translate(-camX+shakeX,shakeY);
 
   // Tiles
   for(const t of tiles){
