@@ -306,7 +306,7 @@ function update(){
       if(tile.tp==='question'&&!tile.hit){
         tile.hit=true;tile.tp='hardBrick';coins.value++;score.value+=100;sfx('coin');
         addP(tile.x+TL/2,tile.y,-6,20,'#ff0',8);addFT('+100',tile.x,tile.y-20,'#ff0');
-        const skills=['big','fast','multi','shield','star','bat','mush','magnet','ghost','superjump','laser','freeze','goldtouch','bomb','clone','gravity','rage'];
+        const skills=['big','fast','multi','shield','star','bat','mush','magnet','ghost','superjump','laser','freeze','goldtouch','bomb','clone','gravity','rage','extralife'];
         const sk=skills[Math.floor(Math.random()*skills.length)];
         mushI.push({x:tile.x,y:tile.y-TL,w:32,h:32,vx:2,vy:-2,og:false,act:true,tp:sk});
         shake(4,2);break;
@@ -396,26 +396,25 @@ function update(){
     // Magnet: pull items toward player
     if(player.magnet>0){const dx=player.x-m.x,dy=player.y-m.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<200&&dist>5){m.x+=dx/dist*3;m.y+=dy/dist*3}}
     if(ro(player,m)&&!player.dead){m.act=false;sfx('powerup');score.value+=300;shake(5,3);
+      const D=300; // 5 seconds at 60fps
       if(m.tp==='mush'){lives.value++;addFT('\u2764 1UP!',player.x,player.y-30,'#0f0')}
-      else if(m.tp==='star'){starPow.value=600;addFT('\u2605 \u65E0\u654C!',player.x,player.y-30,'#ff0')}
-      else if(m.tp==='bat'){starPow.value=300;lives.value++;addFT('\u26A1 NIO POWER!',player.x,player.y-30,'#00bfff')}
-      else if(m.tp==='big'){player.big=480;player.w=44;player.h=52;player.y-=12;addFT('\u2B06 \u53D8\u5927!',player.x,player.y-30,'#f80')}
-      else if(m.tp==='fast'){player.fast=600;addFT('\u26A1 \u52A0\u901F!',player.x,player.y-30,'#0ff')}
-      else if(m.tp==='multi'){player.multi=480;addFT('\u2734 \u4E09\u8FDE\u53D1!',player.x,player.y-30,'#f0f')}
-      else if(m.tp==='shield'){player.shield=480;player.inv=480;addFT('\u26E8 \u62A4\u76FE!',player.x,player.y-30,'#4af')}
-      else if(m.tp==='magnet'){player.magnet=600;addFT('\u27B0 \u78C1\u94C1!',player.x,player.y-30,'#fa0')}
-      else if(m.tp==='ghost'){player.ghost=480;addFT('\u47A9 \u9690\u8EAB!',player.x,player.y-30,'#aaf')}
-      else if(m.tp==='superjump'){player.superjump=500;addFT('\u2B06 \u8D85\u7EA7\u8DF3!',player.x,player.y-30,'#0f0')}
-      else if(m.tp==='laser'){player.laser=360;addFT('\u2501 \u6FC0\u5149\u70AE!',player.x,player.y-30,'#f00')}
-      else if(m.tp==='freeze'){player.freeze=420;addFT('\u2744 \u51B0\u51BB!',player.x,player.y-30,'#8ef')}
-      else if(m.tp==='goldtouch'){player.goldtouch=480;score.value+=2000;addFT('\u2B50 \u70B9\u77F3\u6210\u91D1!',player.x,player.y-30,'#fd0')}
-      else if(m.tp==='bomb'){
-        // Nuke all visible enemies
-        for(const e of ents){if(e.alive&&Math.abs(e.x-player.x)<BW){e.alive=false;score.value+=e.pts||200;explAt(e.x+e.w/2,e.y+e.h/2,12);sfx('explode')}}
-        shake(15,10);addFT('\u1F4A3 \u6838\u7206!',player.x,player.y-30,'#f40')}
-      else if(m.tp==='clone'){player.clone=600;addFT('\u2687 \u5206\u8EAB\u672F!',player.x,player.y-30,'#af0')}
-      else if(m.tp==='gravity'){player.gravity=600;addFT('\u2604 \u4F4E\u91CD\u529B!',player.x,player.y-30,'#c8f')}
-      else if(m.tp==='rage'){player.rage=360;addFT('\u2620 \u72C2\u66B4!',player.x,player.y-30,'#f00')}
+      else if(m.tp==='star'){starPow.value=D;addFT('\u2605 \u65E0\u654C 5s!',player.x,player.y-30,'#ff0')}
+      else if(m.tp==='bat'){starPow.value=D;lives.value++;addFT('\u26A1 NIO POWER 5s!',player.x,player.y-30,'#00bfff')}
+      else if(m.tp==='big'){player.big=D;player.w=44;player.h=52;player.y-=12;addFT('\u2B06 \u53D8\u5927 5s!',player.x,player.y-30,'#f80')}
+      else if(m.tp==='fast'){player.fast=D;addFT('\u26A1 \u52A0\u901F 5s!',player.x,player.y-30,'#0ff')}
+      else if(m.tp==='multi'){player.multi=D;addFT('\u2734 \u4E09\u8FDE\u53D1 5s!',player.x,player.y-30,'#f0f')}
+      else if(m.tp==='shield'){player.shield=D;player.inv=D;addFT('\u26E8 \u62A4\u76FE 5s!',player.x,player.y-30,'#4af')}
+      else if(m.tp==='magnet'){player.magnet=D;addFT('\u27B0 \u78C1\u94C1 5s!',player.x,player.y-30,'#fa0')}
+      else if(m.tp==='ghost'){player.ghost=D;addFT('\u{1F47B} \u9690\u8EAB 5s!',player.x,player.y-30,'#aaf')}
+      else if(m.tp==='superjump'){player.superjump=D;addFT('\u2B06 \u8D85\u7EA7\u8DF3 5s!',player.x,player.y-30,'#0f0')}
+      else if(m.tp==='laser'){player.laser=D;addFT('\u2501 \u6FC0\u5149\u70AE 5s!',player.x,player.y-30,'#f00')}
+      else if(m.tp==='freeze'){player.freeze=D;addFT('\u2744 \u51B0\u51BB 5s!',player.x,player.y-30,'#8ef')}
+      else if(m.tp==='goldtouch'){player.goldtouch=D;score.value+=2000;addFT('\u2B50 \u70B9\u77F3\u6210\u91D1 5s!',player.x,player.y-30,'#fd0')}
+      else if(m.tp==='bomb'){for(const e of ents){if(e.alive&&Math.abs(e.x-player.x)<BW){e.alive=false;score.value+=e.pts||200;explAt(e.x+e.w/2,e.y+e.h/2,12);sfx('explode')}}shake(15,10);addFT('\u{1F4A3} \u6838\u7206!',player.x,player.y-30,'#f40')}
+      else if(m.tp==='clone'){player.clone=D;addFT('\u2687 \u5206\u8EAB\u672F 5s!',player.x,player.y-30,'#af0')}
+      else if(m.tp==='gravity'){player.gravity=D;addFT('\u2604 \u4F4E\u91CD\u529B 5s!',player.x,player.y-30,'#c8f')}
+      else if(m.tp==='rage'){player.rage=D;addFT('\u2620 \u72C2\u66B4 5s!',player.x,player.y-30,'#f00')}
+      else if(m.tp==='extralife'){const bonus=1+Math.floor(Math.random()*3);lives.value+=bonus;addFT('\u2764\uFE0F +'+bonus+'\u547D!',player.x,player.y-30,'#f0f')}
     }
     if(m.y>BH+50)m.act=false;
   }
@@ -619,7 +618,7 @@ function drawGame(){
     const mx=m.x,my=m.y;
     // Glow behind all power-ups
     ctx.save();ctx.shadowBlur=12;
-    const skColors={mush:'#e44',star:'#ff0',bat:'#00bfff',big:'#f80',fast:'#0ff',multi:'#f0f',shield:'#4af',magnet:'#fa0',ghost:'#aaf',superjump:'#0f0',laser:'#f00',freeze:'#8ef',goldtouch:'#fd0',bomb:'#f40',clone:'#af0',gravity:'#c8f',rage:'#f00'};
+    const skColors={mush:'#e44',star:'#ff0',bat:'#00bfff',big:'#f80',fast:'#0ff',multi:'#f0f',shield:'#4af',magnet:'#fa0',ghost:'#aaf',superjump:'#0f0',laser:'#f00',freeze:'#8ef',goldtouch:'#fd0',bomb:'#f40',clone:'#af0',gravity:'#c8f',rage:'#f00',extralife:'#f0f'};
     ctx.shadowColor=skColors[m.tp]||'#fff';
     if(m.tp==='mush'){ctx.fillStyle='#fff';ctx.fillRect(mx+4,my+14,24,16);ctx.fillStyle='#e44';ctx.beginPath();ctx.arc(mx+16,my+14,14,Math.PI,0);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(mx+10,my+6,4,0,Math.PI*2);ctx.arc(mx+22,my+6,4,0,Math.PI*2);ctx.fill()}
     else if(m.tp==='star'){ctx.fillStyle=`rgba(255,255,0,${0.6+Math.sin(frame*0.2)*0.3})`;ctx.save();ctx.translate(mx+16,my+16);ctx.rotate(frame*0.05);starShape(0,0,5,14,7);ctx.restore()}
@@ -634,7 +633,7 @@ function drawGame(){
       const col=skColors[m.tp]||'#fff';
       ctx.fillStyle=col;ctx.beginPath();ctx.arc(mx+16,my+16,13,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='rgba(255,255,255,0.5)';ctx.beginPath();ctx.arc(mx+12,my+12,5,0,Math.PI*2);ctx.fill();
-      const icons={ghost:'\u{1F47B}',superjump:'\u2B06',laser:'\u2501',freeze:'\u2744',goldtouch:'\u2B50',bomb:'\u{1F4A3}',clone:'\u2687',gravity:'\u2604',rage:'\u2620'};
+      const icons={ghost:'\u{1F47B}',superjump:'\u2B06',laser:'\u2501',freeze:'\u2744',goldtouch:'\u2B50',bomb:'\u{1F4A3}',clone:'\u2687',gravity:'\u2604',rage:'\u2620',extralife:'\u2764'};
       ctx.fillStyle='#fff';ctx.font='bold 14px Arial';ctx.textAlign='center';ctx.fillText(icons[m.tp]||'?',mx+16,my+21);
     }
     ctx.restore();
